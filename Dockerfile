@@ -20,7 +20,7 @@ COPY --from=build /app/build /app
 WORKDIR /app
 
 COPY ./env.sh .
-COPY .env .
+COPY ./.env .
 
 # Add bash
 RUN apk add --no-cache bash
