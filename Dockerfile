@@ -1,20 +1,32 @@
-FROM fiitteam8/node_with_chromium:1.0.0
+FROM node:lts-alpine AS build
 
-WORKDIR /myApp
+RUN mkdir /app
+WORKDIR /app
 
-COPY package*.json ./
+COPY package.json .
+RUN npm install 
 
-COPY ./ ./
+COPY . .
 
-EXPOSE 8080
+ENV NODE_ENV=production
 
-#RUN npm install
+RUN npm run build
 
-RUN cd frontend && npm install
+#### NGINX FOR Single Page Application ####
+FROM steebchen/nginx-spa
 
-RUN cd backend && npm install
+COPY --from=build /app/build /app
 
-RUN cd frontend && npm run build
+WORKDIR /app
 
-CMD cd backend && npm run deploy
-#CMD npm run deploy
+COPY ./env.sh .
+COPY .env .
+
+# Add bash
+RUN apk add --no-cache bash
+
+RUN chmod +x env.sh
+
+EXPOSE 80
+
+CMD ["/bin/bash", "-c", "/app/env.sh && nginx"]
