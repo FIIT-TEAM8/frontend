@@ -27,20 +27,20 @@ jobs:
           registry: docker.io
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-#   deploy:
-#     name: deploy
-#     needs: build
-#     runs-on: ubuntu-latest
-#     timeout-minutes: 10
-#     permissions:
-#       contents: read
-#     steps:
-#     - name: Executing remote ssh docker deploy
-#       uses: appleboy/ssh-action@master
-#       with:
-#         host: ${{ secrets.HOST_MACHINE }}
-#         username: ${{ secrets.DEPLOY_USERNAME }}
-#         password: ${{ secrets.DEPLOY_PASSWORD }}
-#         script: |
-#           cd /home/fiitkar/data_infrastructure
-#           docker-compose pull frontend && docker-compose --env-file env/elastic_infrastructure.env up -d --no-deps --build node_server && docker system prune -f
+  deploy:
+    name: deploy
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+    - name: Executing remote ssh docker deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST_MACHINE }}
+        username: ${{ secrets.DEPLOY_USERNAME }}
+        password: ${{ secrets.DEPLOY_PASSWORD }}
+        script: |
+          cd /home/fiitkar/data_infrastructure
+          docker-compose pull frontend && docker-compose --env-file env/elastic_infrastructure.env up -d --no-deps --build frontend && docker system prune -f
