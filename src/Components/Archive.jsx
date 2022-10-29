@@ -71,7 +71,6 @@ export function ArchivedArticle({ url = "", displayArticle = undefined }) {
         setTimeout(() => setLoadingProgress(100), 100);
         setIsloading(false);
         setArticle(result.article);
-        console.log(result.article);
       } else {
         setTimeout(() => setLoadingProgress(2), 500);
         setError(result.msg);

@@ -55,7 +55,7 @@ export default function TitleSearch() {
   }
 
   useEffect(() => {
-    apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/keyword_categories`, "GET").then((result) => {
+    apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/keyword_categories/`, "GET").then((result) => {
       if (result.ok) {
         delete result.ok;
         delete result.status_code;
@@ -63,7 +63,7 @@ export default function TitleSearch() {
       }
     });
 
-    apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/region_mapping`, "GET").then((result) => {
+    apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/region_mapping/`, "GET").then((result) => {
       if (result.ok) {
         delete result.ok;
         delete result.status_code;
