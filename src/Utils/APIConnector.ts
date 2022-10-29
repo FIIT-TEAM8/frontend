@@ -10,7 +10,7 @@ let CREDENTIALS = "same-origin";
 
 if (DEV) {
   MODE = "cors";
-  CREDENTIALS = "include";
+  CREDENTIALS = "omit";
 }
 
 export async function refreshToken() {
@@ -42,7 +42,7 @@ export async function apiCall(
     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
     credentials: CREDENTIALS, // include, *same-origin, omit
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "text/plain",
     },
     redirect: "follow", // manual, *follow, error
     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -85,11 +85,12 @@ export async function apiCall(
       const contentType = response.headers.get("content-type"); // ADD content type to each response???
 
       if (contentType === "application/pdf") {
-        result.ok = true;
         result.blobData = response;
       } else {
         result = await response.json();
       }
+
+      result.ok = true;
     }
   } catch (e) {
     console.error(e);

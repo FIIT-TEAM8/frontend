@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import {
   Collapse,
   IconButton,
@@ -56,13 +57,17 @@ export default function TitleSearch() {
   useEffect(() => {
     apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/keyword_categories`, "GET").then((result) => {
       if (result.ok) {
-        setAllKeywords(Object.keys(result.data));
+        delete result.ok;
+        delete result.status_code;
+        setAllKeywords(Object.keys(result));
       }
     });
 
     apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/region_mapping`, "GET").then((result) => {
       if (result.ok) {
-        setAllRegions(result.data);
+        delete result.ok;
+        delete result.status_code;
+        setAllRegions(result);
       }
     });
 
