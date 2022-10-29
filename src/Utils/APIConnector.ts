@@ -15,7 +15,7 @@ if (DEV) {
 
 export async function refreshToken() {
   // eslint-disable-next-line no-use-before-define
-  const response = await apiCall("/api/user/token", "GET", undefined, true);
+  const response = await apiCall(window._env_.REACT_APP_NODE_SERVER_URL, "/api/user/token", "GET", undefined, true);
   if (response.status === 403 || response.status === 401) {
     Cookies.remove("__authToken");
     Cookies.remove("__refToken");
@@ -25,13 +25,13 @@ export async function refreshToken() {
 }
 
 export async function apiCall(
+  host = window._env_.REACT_APP_NODE_SERVER_URL,
   endpoint = "",
   method = "GET",
   data: any = null,
   ignoreAuthError = false
 ): Promise<APIResponse> {
-  const baseUrl = window._env_.REACT_APP_NODE_SERVER_URL;
-  const url: string = baseUrl + endpoint;
+  const url: string = host + endpoint;
 
   let response: APIResponse = {};
 

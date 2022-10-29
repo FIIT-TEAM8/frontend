@@ -45,7 +45,8 @@ export default function UserProvider({ children }: Props) {
     console.log("Logged in via refToken");
 
     // use user id from loginRefToken
-    await apiCall(`/api/report/${loginRefToken.id}?status=In Progress`, "GET")
+    // @ts-ignore: Property '_env_' does not exist on type 'Window & typeof globalThis'.
+    await apiCall(window._env_.REACT_APP_NODE_SERVER_URL, `/api/report/${loginRefToken.id}?status=In Progress`, "GET")
       .then((result: APIResponse) => {
         if (result.ok) {
           console.log("PDF report was succesfully loaded.");
@@ -67,7 +68,8 @@ export default function UserProvider({ children }: Props) {
 
   // TODO: change from any
   const login = async (loginData: any): Promise<boolean> => {
-    const isLogged = await apiCall("/api/user/login", "POST", loginData).then(
+    // @ts-ignore: Property '_env_' does not exist on type 'Window & typeof globalThis'.
+    const isLogged = await apiCall(window._env_.REACT_APP_NODE_SERVER_URL, "/api/user/login", "POST", loginData).then(
       (result: APIResponse) => {
         if (result.ok) {
           return true;
@@ -85,7 +87,8 @@ export default function UserProvider({ children }: Props) {
   };
 
   const logout = (): void => {
-    apiCall("/api/user/logout", "POST")
+    // @ts-ignore: Property '_env_' does not exist on type 'Window & typeof globalThis'.
+    apiCall(window._env_.REACT_APP_NODE_SERVER_URL, "/api/user/logout", "POST")
       .then((result: APIResponse) => {
         if (result.ok) {
           setUser(undefined);
@@ -102,7 +105,8 @@ export default function UserProvider({ children }: Props) {
   const updateReportAPI = (
     newArticlesInReport: Array<ArticleInReport>
   ): void => {
-    apiCall(`/api/report/update/${reportId}`, "POST", {
+    // @ts-ignore: Property '_env_' does not exist on type 'Window & typeof globalThis'.
+    apiCall(window._env_.REACT_APP_NODE_SERVER_URL, `/api/report/update/${reportId}`, "POST", {
       articlesInReport: newArticlesInReport,
     })
       .then((result) => {
@@ -121,7 +125,8 @@ export default function UserProvider({ children }: Props) {
       updateReportAPI(newArticlesInReport);
     } else if (user && typeof user.id === "number") {
       // create new user's 'In progress' report
-      apiCall("/api/report/create", "POST", {
+      // @ts-ignore: Property '_env_' does not exist on type 'Window & typeof globalThis'.
+      apiCall(window._env_.REACT_APP_NODE_SERVER_URL, "/api/report/create", "POST", {
         userId: user.id,
         articlesInReport: newArticlesInReport,
       })
@@ -169,6 +174,8 @@ export default function UserProvider({ children }: Props) {
   // TODO: change from any
   const signup = async (signupData: any): Promise<boolean> => {
     const isSignedup = await apiCall(
+      // @ts-ignore: Property '_env_' does not exist on type 'Window & typeof globalThis'.
+      window._env_.REACT_APP_NODE_SERVER_URL,
       "/api/user/signup",
       "POST",
       signupData

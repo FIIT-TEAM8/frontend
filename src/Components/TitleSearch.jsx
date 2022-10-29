@@ -54,13 +54,13 @@ export default function TitleSearch() {
   }
 
   useEffect(() => {
-    apiCall("/api/advanced_search/keyword_categories", "GET").then((result) => {
+    apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/keyword_categories`, "GET").then((result) => {
       if (result.ok) {
         setAllKeywords(Object.keys(result.data));
       }
     });
 
-    apiCall("/api/advanced_search/region_mapping", "GET").then((result) => {
+    apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/region_mapping`, "GET").then((result) => {
       if (result.ok) {
         setAllRegions(result.data);
       }
