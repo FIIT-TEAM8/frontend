@@ -10,7 +10,7 @@ let CREDENTIALS = "same-origin";
 
 if (DEV) {
   MODE = "cors";
-  CREDENTIALS = "omit";
+  CREDENTIALS = "include";
 }
 
 export async function refreshToken() {
