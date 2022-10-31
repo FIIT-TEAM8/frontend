@@ -3,7 +3,7 @@ import React from "react";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
-import MenuIcon from "@mui/icons-material/Menu";
+// import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Toolbar from "@mui/material/Toolbar";
@@ -15,7 +15,7 @@ import {
 } from "../Style/NavStyledComponents";
 import HomeLink from "./HomeLink";
 import useWindowSize from "../Utils/Screen";
-import SidebarItems from "./SidebarItems";
+// import SidebarItems from "./SidebarItems";
 
 // SOURCE (MUI DOCS):
 // https://mui.com/components/drawers/#MiniDrawer.js
@@ -25,7 +25,7 @@ export function Topbar({ open, handleDrawerToggle }) {
   const isMobile = width && width < 768;
 
   return (
-    <AppBar position="fixed" open={!isMobile && open} color="neutral">
+    <AppBar position="fixed" elevation={0} open={!isMobile && open} color="neutral">
       <Toolbar>
         <IconButton
           color="inherit"
@@ -37,7 +37,7 @@ export function Topbar({ open, handleDrawerToggle }) {
             ...(!isMobile && open && { display: "none" })
           }}
         >
-          <MenuIcon />
+          {/* <MenuIcon /> */}
         </IconButton>
         <div style={{ marginLeft: "auto" }}>
           <MainBar />
@@ -96,9 +96,9 @@ export default function MainNavigation() {
     setIsOpen(true);
   };
 
-  const handleDrawerClose = () => {
-    setIsOpen(false);
-  };
+  // const handleDrawerClose = () => {
+  //   setIsOpen(false);
+  // };
 
   const handleDrawerToggle = () => {
     setIsOpen(!isOpen);
@@ -111,14 +111,14 @@ export default function MainNavigation() {
         handleDrawerOpen={handleDrawerOpen}
         handleDrawerToggle={handleDrawerToggle}
       />
-      <Sidebar
+      {/* <Sidebar
         open={isOpen}
         handleDrawerClose={handleDrawerClose}
         handleDrawerOpen={handleDrawerOpen}
         handleDrawerToggle={handleDrawerToggle}
       >
         <SidebarItems open={isOpen} />
-      </Sidebar>
+      </Sidebar> */}
     </>
   );
 }

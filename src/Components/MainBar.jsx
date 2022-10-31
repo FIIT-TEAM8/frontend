@@ -1,13 +1,14 @@
-import { Stack, Button } from "@mui/material";
+import { Stack } from "@mui/material";
+// import { Button } from "@mui/material";
 import React, { useState } from "react";
 import Login from "./Login";
 import Signup from "./Signup";
-import { useUser } from "../Utils/UserContext";
+// import { useUser } from "../Utils/UserContext";
 
 export default function MainBar() {
   const [isOpenLogin, setIsOpenLogin] = useState(false);
   const [isOpenSignup, setIsOpenSignup] = useState(false);
-  const { user, logout } = useUser();
+  // const { user, logout } = useUser();
 
   const onLoginOpen = () => {
     setIsOpenSignup(false);
@@ -18,9 +19,9 @@ export default function MainBar() {
     setIsOpenLogin(false);
   };
 
-  const onLogout = () => {
-    logout();
-  };
+  // const onLogout = () => {
+  //   logout();
+  // };
 
   const onSignupOpen = () => {
     setIsOpenLogin(false);
@@ -40,7 +41,7 @@ export default function MainBar() {
         spacing={0.5}
         m={2}
       >
-        {user ? (
+        {/* {user ? (
           <Button color="primary" variant="outlined" onClick={onLogout}>
             Log out
           </Button>
@@ -53,7 +54,7 @@ export default function MainBar() {
               Sign up
             </Button>
           </>
-        )}
+        )} */}
       </Stack>
 
       <Login

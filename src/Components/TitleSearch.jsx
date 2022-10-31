@@ -43,10 +43,17 @@ export default function TitleSearch() {
 
   const logoStyle = {
     margin: "auto",
-    marginBottom: "20px",
+    marginBottom: "10px",
     display: "block",
     width: "30%",
     height: "auto"
+  };
+
+  const aboutStyle = {
+    margin: "auto",
+    marginBottom: "25px",
+    display: "block",
+    textAlign: "center"
   };
 
   if (showingResults) {
@@ -259,6 +266,8 @@ export default function TitleSearch() {
     submitSearchParams();
   };
 
+  const aboutText = "Your adverse media screening portal. ";
+
   return (
     <div style={searchDivStyle}>
       <form onSubmit={onSubmit}>
@@ -272,6 +281,11 @@ export default function TitleSearch() {
           </Typography> */}
           <img style={logoStyle} src="./adversea_logo.svg" alt="adversea" />
         </Link>
+
+        <p style={aboutStyle}>
+          {aboutText}
+          <a href="/about">Learn more.</a>
+        </p>
         <TextField
           id="outlined-search"
           color="secondary"
