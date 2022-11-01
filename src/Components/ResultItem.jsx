@@ -33,7 +33,7 @@ export default function ResultItem({ item }) {
           >
             <Box>
               <Typography noWrap color="secondary">
-                {item.published.slice(5, -13)}
+                {item.published.length !== 0 ? item.published[0].slice(5, -13) : "Missing published date"}
               </Typography>
             </Box>
             <Link
