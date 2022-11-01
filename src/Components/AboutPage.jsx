@@ -30,7 +30,7 @@ export default function AboutPage() {
                 adverse media screening portal designed to search for natural and legal persons with
                 an unfavourable reputation. the key impulse behind this project is to provide a
                 solution for companies where the integrity of their potential employees or partners
-                is a key to reliable and safe operation. adversea is a project of venant
+                is a key to reliable and safe operation. adversea is a project of Venant
                 non-government organization with headquarters in the European Union. we are
                 committed to the mission of improving every day&apos;s life of people through the
                 implementation of innovative ideas.
