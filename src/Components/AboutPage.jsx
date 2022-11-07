@@ -159,6 +159,31 @@ export default function AboutPage() {
           <Grid container spacing={1} direction="column">
             <Grid item>
               <Typography variant="h2" color="primary">
+                privacy policy
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography color="secondary" fontSize="1rem">
+                one of our main priorities is the privacy of our visitors.
+                {" "}
+                <Link
+                  href="https://www.privacypolicygenerator.info/live.php?token=Efpd5PrwYduDf9W7A7fSPxHDpF7Ahgvn"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  the privacy policy document
+                </Link>
+                {" "}
+                contains types of information that is collected and recorded by adversea and how we
+                use it.
+              </Typography>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item>
+          <Grid container spacing={1} direction="column">
+            <Grid item>
+              <Typography variant="h2" color="primary">
                 contact us
               </Typography>
             </Grid>
