@@ -43,17 +43,27 @@ export default function TitleSearch() {
 
   const logoStyle = {
     margin: "auto",
-    marginBottom: "10px",
     display: "block",
     width: "30%",
-    height: "auto"
+    height: "auto",
   };
 
   const aboutStyle = {
     margin: "auto",
     marginBottom: "25px",
+    marginTop: "-20px",
     display: "block",
     textAlign: "center"
+  };
+
+  const betaStyle = {
+    color: "rgb(255, 0, 68)",
+    marginRight: "36%",
+    textAlign: "right",
+    top: "-20px",
+    zIndex: "10",
+    position: "relative",
+    fontSize: "10px"
   };
 
   if (showingResults) {
@@ -280,6 +290,7 @@ export default function TitleSearch() {
             ams
           </Typography> */}
           <img style={logoStyle} src="./adversea_logo.svg" alt="adversea" />
+          <p style={betaStyle}>Beta version</p>
         </Link>
 
         <p style={aboutStyle}>
