@@ -249,7 +249,7 @@ export default function TitleSearch() {
 
     setShowingResults(true);
     setSearchParams(searchParams);
-    navigate(`results?${searchParams.toString()}`);
+    navigate(`statistics?${searchParams.toString()}`);
   };
 
   const onAdvancedSearchApply = () => {

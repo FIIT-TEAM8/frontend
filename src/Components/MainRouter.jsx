@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import SearchResults from "./SearchResults";
+// import SearchResults from "./SearchResults";
+import Statistics from "./Statistics";
 import TitleSearch from "./TitleSearch";
 import Login from "./Login";
 import Archive from "./Archive";
@@ -15,7 +16,8 @@ export default function MainRouter() {
     <Routes>
       <Route path="" element={<Navigate to="search" />} />
       <Route path="search" element={<TitleSearch />}>
-        <Route path="results" element={<SearchResults />} />
+        {/* <Route path="results" element={<SearchResults />} /> */}
+        <Route path="statistics" element={<Statistics />} />
       </Route>
       <Route path="archive" element={<Archive />} />
       <Route path="about" element={<AboutPage />} />
