@@ -101,9 +101,9 @@ export default function TitleSearch() {
           </Grid>
           <Grid item>
             <Typography color="secondary">
-              Your adverse media screening portal.
+              your adverse media screening portal.
               {" "}
-              <Link to="/about">Learn more</Link>
+              <Link to="/about">learn more</Link>
               .
             </Typography>
           </Grid>
