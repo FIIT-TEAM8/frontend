@@ -1,5 +1,5 @@
 import {
-  Button, Grid, IconButton, TextField, InputAdornment
+  Button, Grid, IconButton, TextField, InputAdornment, Typography
 } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import {
@@ -26,21 +26,6 @@ export default function TitleSearch() {
   const searchDivStyle = {
     margin: "auto",
     padding: shouldCollapse ? "100px 7%" : "100px 20%"
-  };
-
-  const logoStyle = {
-    margin: "auto",
-    marginBottom: "10px",
-    display: "block",
-    width: "30%",
-    height: "auto"
-  };
-
-  const aboutStyle = {
-    margin: "auto",
-    marginBottom: "25px",
-    display: "block",
-    textAlign: "center"
   };
 
   if (showingResults) {
@@ -105,64 +90,71 @@ export default function TitleSearch() {
     submitSearchParams();
   };
 
-  const aboutText = "Your adverse media screening portal. ";
-
   return (
-    <div style={searchDivStyle}>
-      <form onSubmit={onSubmit}>
-        <Link to="/search" onClick={onAdvancedSearchCancel} style={{ textDecoration: "none" }}>
-          {/* <Typography variant="h1" color="primary">
-            ams
-          </Typography> */}
-          <img style={logoStyle} src="/adversea_logo.svg" alt="adversea" />
-        </Link>
-
-        <p style={aboutStyle}>
-          {aboutText}
-          <a href="/about">Learn more.</a>
-        </p>
-        <TextField
-          id="outlined-search"
-          color="secondary"
-          value={searchTerm}
-          label="Search"
-          autoComplete="off"
-          variant="outlined"
-          onChange={(event) => handleSearchChange(event.target.value)}
-          fullWidth
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton color="primary" type="submit">
-                  <Search />
-                </IconButton>
-              </InputAdornment>
-            )
-          }}
-        />
-      </form>
-
-      {!advancedSearchOpen && (
-        <Grid container justifyContent="flex-end" spacing={1} alignItems="center">
+    <Grid style={searchDivStyle} direction="column">
+      <Grid container spacing={2} direction="column">
+        <Grid container direction="column" alignItems="center" justifyContent="center">
           <Grid item>
-            <AppliedFilters
-              numSelectedFilters={numSelectedFilters}
-              onClick={() => setAdvancedSearchOpen(true)}
-            />
+            <Link to="/search" onClick={onAdvancedSearchCancel} style={{ textDecoration: "none" }}>
+              <img src="./adversea_logo.svg" alt="adversea" />
+            </Link>
           </Grid>
           <Grid item>
-            <Button
-              color="secondary"
-              variant="text"
-              size="small"
-              style={{ textDecoration: "underline" }}
-              onClick={() => setAdvancedSearchOpen(true)}
-            >
-              Advanced search
-            </Button>
+            <Typography color="secondary">
+              Your adverse media screening portal.
+              {" "}
+              <Link to="/about">Learn more</Link>
+              .
+            </Typography>
           </Grid>
         </Grid>
-      )}
+        <Grid item>
+          <form onSubmit={onSubmit}>
+            <TextField
+              id="outlined-search"
+              color="secondary"
+              value={searchTerm}
+              label="search"
+              autoComplete="off"
+              variant="outlined"
+              onChange={(event) => handleSearchChange(event.target.value)}
+              fullWidth
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton color="primary" type="submit">
+                      <Search />
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+          </form>
+        </Grid>
+      </Grid>
+      <Grid item>
+        {!advancedSearchOpen && (
+          <Grid container justifyContent="flex-end" spacing={1} alignItems="center">
+            <Grid item>
+              <AppliedFilters
+                numSelectedFilters={numSelectedFilters}
+                onClick={() => setAdvancedSearchOpen(true)}
+              />
+            </Grid>
+            <Grid item>
+              <Button
+                color="secondary"
+                variant="text"
+                size="small"
+                style={{ textDecoration: "underline" }}
+                onClick={() => setAdvancedSearchOpen(true)}
+              >
+                Advanced search
+              </Button>
+            </Grid>
+          </Grid>
+        )}
+      </Grid>
 
       <Handler
         open={advancedSearchOpen}
@@ -171,7 +163,9 @@ export default function TitleSearch() {
         hide={onAdvancedSearchHide}
       />
 
-      <Outlet />
-    </div>
+      <Grid item>
+        <Outlet />
+      </Grid>
+    </Grid>
   );
 }
