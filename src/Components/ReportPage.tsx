@@ -7,7 +7,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  AlertColor,
+  AlertColor
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { APIResponse, Article, ArticleInReport } from "../Utils/Interfaces";
@@ -31,7 +31,7 @@ export default function ReportPage() {
 
   const searchDivStyle: { margin: string; padding: string } = {
     margin: "auto",
-    padding: shouldCollapse ? "20px 7%" : "20px 20%",
+    padding: shouldCollapse ? "20px 7%" : "20px 20%"
   };
 
   let MainContent;
@@ -51,7 +51,7 @@ export default function ReportPage() {
     }
     apiCall(`/api/data/report?ids=[${articlesIds.join(", ")}]`, "GET").then(
       (result: APIResponse) => {
-        if (result.ok && result.data && result.data.results) {
+        if (result.ok && result.data && typeof result.data.results !== "string") {
           setArticlesFromReport([...result.data.results]);
         } else {
           openSnackbar("Unable to get articles in report.", "error");
@@ -82,10 +82,7 @@ export default function ReportPage() {
 
   const downloadPDF = async (): Promise<void> => {
     if (articlesInReport.length === 0) {
-      openSnackbar(
-        "Unable to generate PDF, because there are no articles in report.",
-        "error"
-      );
+      openSnackbar("Unable to generate PDF, because there are no articles in report.", "error");
     }
 
     // display loading circle
@@ -103,7 +100,7 @@ export default function ReportPage() {
       "POST",
       {
         articlesIds,
-        articlesSearchTerms,
+        articlesSearchTerms
       }
     )
       .then(async (result: APIResponse) => {
@@ -149,13 +146,7 @@ export default function ReportPage() {
     MainContent = (
       <>
         <Grid item xs={12} md={4} lg={2} textAlign="end">
-          <Button
-            fullWidth
-            size="large"
-            variant="contained"
-            color="primary"
-            onClick={downloadPDF}
-          >
+          <Button fullWidth size="large" variant="contained" color="primary" onClick={downloadPDF}>
             Download
           </Button>
         </Grid>
@@ -202,12 +193,7 @@ export default function ReportPage() {
         </DialogContent>
       </Dialog>
       {/* Main content of the page starts here */}
-      <Grid
-        container
-        style={searchDivStyle}
-        justifyContent="space-between"
-        alignItems="center"
-      >
+      <Grid container style={searchDivStyle} justifyContent="space-between" alignItems="center">
         <Grid item xs={12} md={8}>
           <MainHeading text="pdf report" />
         </Grid>
