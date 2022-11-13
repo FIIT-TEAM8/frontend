@@ -18,6 +18,7 @@ export default function TitleSearch() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [showingResults, setShowingResults] = useState(false);
+  const [shouldSubmitSearchParams, setShouldSubmitSearchParams] = useState(true);
 
   // states for advanced search
   const [advancedSearchOpen, setAdvancedSearchOpen] = useState(false);
@@ -32,12 +33,22 @@ export default function TitleSearch() {
     searchDivStyle.padding = shouldCollapse ? "20px 7%" : "20px 20%";
   }
 
+  const SearchFieldInputProps = {
+    endAdornment: !advancedSearchOpen ? (
+      <InputAdornment position="end">
+        <IconButton color="primary" type="submit">
+          <Search />
+        </IconButton>
+      </InputAdornment>
+    ) : undefined
+  };
+
   useEffect(() => {
     const q = searchParams.get("q");
+    setSearchTerm(q);
 
     if (q) {
       setShowingResults(true);
-      setSearchTerm(q);
     }
   }, []);
 
@@ -51,11 +62,23 @@ export default function TitleSearch() {
     }
   }, [searchParams]);
 
+  useEffect(() => {
+    if (searchTerm === "" && advancedSearchOpen) {
+      setShouldSubmitSearchParams(false);
+    } else {
+      setShouldSubmitSearchParams(true);
+    }
+  }, [searchTerm, advancedSearchOpen]);
+
   const handleSearchChange = (value) => {
     setSearchTerm(value);
   };
 
   const submitSearchParams = () => {
+    if (searchTerm === "" && advancedSearchOpen) {
+      setShouldSubmitSearchParams(false);
+      return;
+    }
     searchParams.delete("q");
     searchParams.delete("page");
 
@@ -96,7 +119,7 @@ export default function TitleSearch() {
         <Grid container direction="column" alignItems="center" justifyContent="center">
           <Grid item>
             <Link to="/search" onClick={onAdvancedSearchCancel} style={{ textDecoration: "none" }}>
-              <img src="./adversea_logo.svg" alt="adversea" />
+              <img src="/adversea_logo.svg" alt="adversea" />
             </Link>
           </Grid>
           <Grid item>
@@ -119,20 +142,18 @@ export default function TitleSearch() {
               variant="outlined"
               onChange={(event) => handleSearchChange(event.target.value)}
               fullWidth
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton color="primary" type="submit">
-                      <Search />
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
+              InputProps={SearchFieldInputProps}
             />
           </form>
         </Grid>
       </Grid>
-      <Grid item>
+      <Grid item container direction="row">
+        {!shouldSubmitSearchParams && (
+          <Grid item>
+            <Typography color="error">search field cannot be empty</Typography>
+          </Grid>
+        )}
+
         {!advancedSearchOpen && (
           <Grid container justifyContent="flex-end" spacing={1} alignItems="center">
             <Grid item>
@@ -156,12 +177,15 @@ export default function TitleSearch() {
         )}
       </Grid>
 
-      <Handler
-        open={advancedSearchOpen}
-        onFilterSelect={updateNumSelectedFilters}
-        apply={submitSearchParams}
-        hide={onAdvancedSearchHide}
-      />
+      <Grid item>
+        <Handler
+          open={advancedSearchOpen}
+          submitAllowed={shouldSubmitSearchParams}
+          onFilterSelect={updateNumSelectedFilters}
+          apply={submitSearchParams}
+          hide={onAdvancedSearchHide}
+        />
+      </Grid>
 
       <Grid item>
         <Outlet />

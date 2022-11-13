@@ -1,7 +1,7 @@
 import { Typography, Grid, Link } from "@mui/material";
 import React from "react";
-import useWindowSize from "../Utils/Screen";
-import MainHeading from "./MainHeading";
+import useWindowSize from "../../Utils/Screen";
+import MainHeading from "../MainHeading";
 
 export default function AboutPage() {
   const { width } = useWindowSize();
