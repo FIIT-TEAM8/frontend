@@ -81,8 +81,10 @@ export default function TitleSearch() {
   };
 
   const submitSearchParams = () => {
-    if (searchTerm === "" && advancedSearchOpen) {
-      setShouldSubmitSearchParams(false);
+    if (searchTerm === "") {
+      if (advancedSearchOpen) {
+        setShouldSubmitSearchParams(false);
+      }
       return;
     }
     searchParams.delete("q");
