@@ -3,7 +3,6 @@ import {
   TextField,
   Typography,
   Button,
-  Box,
   Grid,
   InputAdornment,
   IconButton,
@@ -25,11 +24,11 @@ export default function TitleSearch() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [showingResults, setShowingResults] = useState(false);
+  const [shouldSubmitSearchParams, setShouldSubmitSearchParams] = useState(true);
 
   // states for advanced search
   const [advancedSearchOpen, setAdvancedSearchOpen] = useState(false);
   const [numSelectedFilters, setNumSelectedFilters] = useState(0);
-  const [shouldSubmitSearchParams, setShouldSubmitSearchParams] = useState(true);
 
   const searchDivStyle = {
     margin: "auto",
@@ -82,10 +81,8 @@ export default function TitleSearch() {
   };
 
   const submitSearchParams = () => {
-    if (searchTerm === "") {
-      if (advancedSearchOpen) {
-        setShouldSubmitSearchParams(false);
-      }
+    if (searchTerm === "" && advancedSearchOpen) {
+      setShouldSubmitSearchParams(false);
       return;
     }
     searchParams.delete("q");
@@ -119,20 +116,8 @@ export default function TitleSearch() {
       <Grid container spacing={2} direction="column">
         <Grid container direction="column" alignItems="center" justify="center">
           <Grid item>
-            <Link to=".." style={{ textDecoration: "none" }}>
-              <Grid item>
-                <Box
-                  component="img"
-                  sx={{
-                    height: "auto",
-                    width: "auto",
-                    maxHeight: { xs: 200, md: "100%", lg: "100%" },
-                    maxWidth: { xs: 200, md: "100%", lg: "100%" }
-                  }}
-                  alt="adversea"
-                  src="/adversea_logo.svg"
-                />
-              </Grid>
+            <Link to="/search" style={{ textDecoration: "none" }}>
+              <img src="/adversea_logo.svg" alt="adversea" />
             </Link>
           </Grid>
           <Grid item alignItems="right">

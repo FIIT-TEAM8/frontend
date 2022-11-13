@@ -24,6 +24,7 @@ const emptyFilters: AdvSearchItems = {
 
 type Props = {
   open: boolean;
+  submitAllowed: boolean;
   // eslint-disable-next-line no-unused-vars
   onFilterSelect: (numSelectedFilters: number) => void;
   apply: () => void;
@@ -31,7 +32,7 @@ type Props = {
 };
 
 export default function Handler({
-  open, onFilterSelect, apply, hide
+  open, submitAllowed, onFilterSelect, apply, hide
 }: Props) {
   const matches = useMediaQuery("(min-width:800px)");
   const [searchParams, setSearchParams] = useSearchParams();
@@ -42,6 +43,7 @@ export default function Handler({
   const [allKeywords, setAllKeywords] = useState<string[]>([]);
   const [selectedFilters, setSelectedFilters] = useState(emptyFilters);
   const [numSelectedFilters, setNumSelectedFilters] = useState(0);
+  const [canSubmit, setCanSubmit] = useState(true);
 
   useEffect(() => {
     apiCall(
@@ -70,6 +72,10 @@ export default function Handler({
   useEffect(() => {
     setAdvancedSearchOpen(open);
   }, [open]);
+
+  useEffect(() => {
+    setCanSubmit(submitAllowed);
+  }, [submitAllowed]);
 
   // calculate number of selected filters
   useEffect(() => {
@@ -191,16 +197,6 @@ export default function Handler({
   };
 
   const onRegionSelect = (selectedRegions: string[]) => {
-    // console.log(selectedRegion);
-    // const updatedRegions = selectedFilters.regions;
-    // updatedRegions.push(selectedRegion);
-    // const index = updatedRegions.indexOf(selectedRegion);
-    // if (index > -1) {
-    //   updatedRegions.splice(index, 1);
-    // } else {
-    //   updatedRegions.push(selectedRegion);
-    // }
-    // console.log({ ...selectedFilters, regions: updatedRegions });
     setSelectedFilters({ ...selectedFilters, regions: selectedRegions });
   };
 
@@ -219,9 +215,10 @@ export default function Handler({
   };
 
   const onApply = () => {
-    updateSearchParams(selectedFilters);
-
-    onHide();
+    if (canSubmit) {
+      updateSearchParams(selectedFilters);
+      onHide();
+    }
   };
 
   const onCancel = () => {
