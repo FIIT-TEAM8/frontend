@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Grid, Button } from "@mui/material";
 import React from "react";
 import {
   Tooltip, ResponsiveContainer, XAxis, YAxis,
@@ -63,7 +63,40 @@ export default function Statistics() {
   //  };
   return (
     <div className="main">
-      <h1>Graph statistics</h1>
+      <Grid item container justifyContent="center" spacing={0} marginTop={3} marginBottom={3} columns={16}>
+        <Grid item xs="auto">
+          <Button
+            size="large"
+            color="primary"
+            variant="text"
+            sx={{
+              borderRight: "1px solid",
+              borderRadius: "0",
+              width: 300
+            }}
+          >
+            statistics
+          </Button>
+        </Grid>
+
+        <Grid item xs="auto">
+          <Button
+            size="large"
+            color="secondary"
+            variant="text"
+            sx={{
+              width: 300
+            }}
+          >
+            articles
+          </Button>
+        </Grid>
+      </Grid>
+      <Grid item container justifyContent="center" spacing={1}>
+        <Grid item>
+          <h1>statistics for</h1>
+        </Grid>
+      </Grid>
       <Grid container spacing={1} style={{ textAlign: "center" }}>
         <Grid item xs={6}>
           <ResponsiveContainer className="topCrimesChart" width="100%" height={270}>
