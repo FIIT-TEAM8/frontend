@@ -13,8 +13,7 @@ export default function MainRouter() {
 
   return (
     <Routes>
-      <Route path="" element={<Navigate to="search" />} />
-      <Route path="search" element={<TitleSearch />}>
+      <Route path="" element={<TitleSearch />}>
         <Route path="results" element={<SearchResults />} />
       </Route>
       <Route path="archive" element={<Archive />} />
