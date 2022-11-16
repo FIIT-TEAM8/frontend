@@ -255,6 +255,19 @@ export default function TitleSearch() {
               <img src="./adversea_logo.svg" alt="adversea" />
             </Link>
           </Grid>
+          <Grid item alignItems="right">
+            <Typography
+              color="error"
+              sx={{
+                marginLeft: 25,
+                marginTop: -2,
+                marginBottom: 2,
+                fontSize: 12
+              }}
+            >
+              Beta version
+            </Typography>
+          </Grid>
           <Grid item>
             <Typography color="secondary">
               Your adverse media screening portal.
