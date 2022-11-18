@@ -252,7 +252,7 @@ export default function TitleSearch() {
   };
 
   return (
-    <Grid style={searchDivStyle} direction="column">
+    <Grid container style={searchDivStyle} direction="column">
       <Grid container spacing={2} direction="column">
         <Grid container direction="column" alignItems="center" justifyContent="center">
           <Grid item>
