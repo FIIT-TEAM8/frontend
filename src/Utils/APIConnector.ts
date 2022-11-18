@@ -7,10 +7,15 @@ const DEV: boolean = process.env.NODE_ENV !== "production";
 
 let MODE = "same-origin";
 let CREDENTIALS = "same-origin";
+let headers = { "Content-Type": "application/json" };
 
 if (DEV) {
   MODE = "cors";
   CREDENTIALS = "omit";
+  headers = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+  };
 }
 
 export async function refreshToken() {
@@ -41,10 +46,7 @@ export async function apiCall(
     mode: MODE, // no-cors, *cors, same-origin
     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
     credentials: CREDENTIALS, // include, *same-origin, omit
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    },
+    headers,
     redirect: "follow", // manual, *follow, error
     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
     // body: JSON.stringify(data) // body data type must match "Content-Type" header
