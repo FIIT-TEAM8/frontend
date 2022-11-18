@@ -216,7 +216,7 @@ export default function TitleSearch() {
     }
 
     searchParams.append("q", searchTerm);
-    searchParams.append("page", 1);
+    // searchParams.append("page", 1);
 
     const selectedFrom = selectedFilters.from.value !== selectedFilters.from.defaultValue
       ? selectedFilters.from.value
@@ -249,7 +249,7 @@ export default function TitleSearch() {
 
     setShowingResults(true);
     setSearchParams(searchParams);
-    navigate(`statistics?${searchParams.toString()}`);
+    navigate(`stats?${searchParams.toString()}`);
   };
 
   const onAdvancedSearchApply = () => {

@@ -17,7 +17,7 @@ export default function MainRouter() {
       <Route path="" element={<Navigate to="search" />} />
       <Route path="search" element={<TitleSearch />}>
         {/* <Route path="results" element={<SearchResults />} /> */}
-        <Route path="statistics" element={<Statistics />} />
+        <Route path="stats" element={<Statistics />} />
       </Route>
       <Route path="archive" element={<Archive />} />
       <Route path="about" element={<AboutPage />} />

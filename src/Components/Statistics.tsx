@@ -1,30 +1,64 @@
-import { Grid, Button } from "@mui/material";
-import React from "react";
+import { Grid, Button, Typography } from "@mui/material";
+import React, { useState, useEffect } from "react";
 import {
   Tooltip, ResponsiveContainer, XAxis, YAxis,
   LineChart, Line, CartesianGrid, BarChart, Bar, Legend
 } from "recharts";
+import { useSearchParams } from "react-router-dom";
+import { apiCall } from "../Utils/APIConnector";
 import RegionsPieChart from "./StatisticsPieChart";
 
 export default function Statistics() {
-  const articles = [
-    { year: "2016", articles: 20 },
-    { year: "2017", articles: 35 },
-    { year: "2018", articles: 12 },
-    { year: "2019", articles: 28 },
-    { year: "2020", articles: 15 },
-    { year: "2021", articles: 45 },
-    { year: "2022", articles: 67 },
-  ];
-  const topCrimes = [
-    { crime: "assault", number: 20 },
-    { crime: "money laundering", number: 35 },
-    { crime: "murder", number: 12 },
-    { crime: "terrorism", number: 28 },
-    { crime: "hijacking", number: 15 },
-    { crime: "human trafficing", number: 45 },
-    { crime: "arsony", number: 10 },
-  ];
+  const [searchParams] = useSearchParams();
+  // const [actResults, setActResults] = useState([]);
+  // const [isLoaded, setIsLoaded] = useState(false);
+  // const [lastSearched, setLastSearched] = useState("null");
+  const [articles, setArticles] = useState(0 as any);
+  const [topCrimes, setTopCrimes] = useState({} as any);
+  const [regions] = useState([
+    { name: "Great Britain", number: 20 }
+  ]);
+  const [query, setQuery] = useState("" as any);
+
+  useEffect(() => {
+    // setIsLoaded(false);
+
+    // const q = searchParams.get("q");
+    // if (q !== lastSearched) {
+    //   setLastSearched(q);
+    // }
+
+    setQuery(searchParams.get("q"));
+
+    apiCall(`/stats/api/search?${searchParams.toString()}`, "GET").then(
+      (result) => {
+        if (result.ok) {
+          setArticles(result.data?.stats.articlesCount);
+          setTopCrimes(result.data?.stats.stats.articlesByCrime);
+          // setIsLoaded(true);
+        }
+      }
+    );
+  }, [searchParams]);
+
+  // const articles = [
+  //   { year: "2016", articles: 20 },
+  //   { year: "2017", articles: 35 },
+  //   { year: "2018", articles: 12 },
+  //   { year: "2019", articles: 28 },
+  //   { year: "2020", articles: 15 },
+  //   { year: "2021", articles: 45 },
+  //   { year: "2022", articles: 67 },
+  // ];
+  // const topCrimes = [
+  //   { crime: "assault", number: 20 },
+  //   { crime: "money laundering", number: 35 },
+  //   { crime: "murder", number: 12 },
+  //   { crime: "terrorism", number: 28 },
+  //   { crime: "hijacking", number: 15 },
+  //   { crime: "human trafficing", number: 45 },
+  //   { crime: "arsony", number: 10 },
+  // ];
   // const languages = [
   //   { language: "english", number: 20 },
   //   { language: "italian", number: 35 },
@@ -35,32 +69,10 @@ export default function Statistics() {
   //   { language: "spanish", number: 10 },
   // ];
 
-  // const chartsStyle = {
-  //   textAlign: "center"
-  // }
-  //  const regions = [
-  //    { name: "gb", number: 20 },
-  //    { name: 'de', number: 35 },
-  //    { name: 'fr', number: 12 },
-  //    { name: 'it', number: 28},
-  //    { name: 'hu', number: 15 },
-  //    { name: 'pl', number: 45 },
-  //    { name: 'cz', number: 10 },
-  //  ]
-  //  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
-  //  const RADIAN = Math.PI / 180;
-  //  const renderCustomizedLabel = ({
-  //   cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-  //    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  //    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  //    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-  //    return (
-  //      <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'}
-  //  dominantBaseline="central">
-  //        {`${(percent * 100).toFixed(0)}%`}
-  //      </text>
-  //    );
-  //  };
+  const statsText = "statistics for: ";
+
+  console.log("hahahaha ", regions);
+
   return (
     <div className="main">
       <Grid item container justifyContent="center" spacing={0} marginTop={3} marginBottom={3} columns={16}>
@@ -94,7 +106,17 @@ export default function Statistics() {
       </Grid>
       <Grid item container justifyContent="center" spacing={1}>
         <Grid item>
-          <h1>statistics for</h1>
+          <Typography
+            sx={{
+              margin: 2,
+              marginBottom: 6,
+              fontSize: 30,
+              fontWeight: 500
+            }}
+          >
+            {statsText}
+            {query}
+          </Typography>
         </Grid>
       </Grid>
       <Grid container spacing={1} style={{ textAlign: "center" }}>
@@ -120,24 +142,7 @@ export default function Statistics() {
         </Grid>
 
         <Grid item xs={6}>
-          {/* <ResponsiveContainer className="languagesChart" width="100%" height={270}>
-            <BarChart
-              width={200}
-              height={300}
-              data={languages}
-              margin={{
-                top: 5,
-                bottom: 5,
-              }}
-            >
-              <XAxis dataKey="language" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="number" fill="#0090A4" />
-            </BarChart>
-          </ResponsiveContainer> */}
-          <RegionsPieChart />
+          <RegionsPieChart regions={regions} />
         </Grid>
         <Grid item xs={12}>
           <ResponsiveContainer width="100%" height={200}>

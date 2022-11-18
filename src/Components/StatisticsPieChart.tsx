@@ -20,6 +20,7 @@ const renderActiveShape = (props: {
   const ex = mx + (cos >= 0 ? 1 : -1) * 22;
   const ey = my;
   const textAnchor = cos >= 0 ? "start" : "end";
+
   return (
     <g>
       <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
@@ -53,24 +54,26 @@ const renderActiveShape = (props: {
   );
 };
 
-export default class RegionsPieChart extends PureComponent {
+export default class RegionsPieChart extends PureComponent<{
+  regions: { name: string; number: number; }[]
+} > {
   COLORS = ["#0090A4", "#58CDBD", "#9D4993", "#36AD89"];
 
-  regions = [
-    { name: "Great Britain", number: 20 },
-    { name: "Germany", number: 35 },
-    { name: "France", number: 12 },
-    { name: "Italy", number: 28 },
-    { name: "Hungary", number: 15 },
-    { name: "Poland", number: 45 },
-    { name: "Czech Republic", number: 10 },
-  ];
+  // regions1 = [
+  //   { name: "Great Britain", number: 20 },
+  //   { name: "Germany", number: 35 },
+  //   { name: "France", number: 12 },
+  //   { name: "Italy", number: 28 },
+  //   { name: "Hungary", number: 15 },
+  //   { name: "Poland", number: 45 },
+  //   { name: "Czech Republic", number: 10 },
+  // ];
 
-  constructor(props: {} | Readonly<{}>) {
+  constructor(props: any) {
     super(props);
 
     this.state = {
-      activeIndex: 0,
+      activeIndex: 0
     };
   }
 
@@ -82,13 +85,17 @@ export default class RegionsPieChart extends PureComponent {
 
   override render() {
     const { activeIndex }: any = this.state;
+    const { regions = [] } = this.props;
+
+    console.log(regions);
+
     return (
       <ResponsiveContainer width="100%" height={300}>
         <PieChart width={300} height={300}>
           <Pie
             activeIndex={activeIndex}
             activeShape={renderActiveShape}
-            data={this.regions}
+            data={regions}
             cx="50%"
             cy="50%"
             innerRadius={70}
@@ -97,7 +104,7 @@ export default class RegionsPieChart extends PureComponent {
             dataKey="number"
             onMouseEnter={this.onPieEnter}
           >
-            {this.regions.map((entry, index) => (
+            {regions.map((entry: any, index: number) => (
               <Cell key={`cell-${entry}`} fill={this.COLORS[index % this.COLORS.length]} />
             ))}
           </Pie>
