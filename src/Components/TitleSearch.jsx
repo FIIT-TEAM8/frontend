@@ -9,6 +9,7 @@ import {
   Button,
   Box,
   ButtonBase,
+  Grid
 } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import {
@@ -39,15 +40,7 @@ export default function TitleSearch() {
 
   const searchDivStyle = {
     margin: "auto",
-    padding: shouldCollapse ? "100px 7%" : "100px 20%",
-  };
-
-  const logoStyle = {
-    margin: "auto",
-    marginBottom: "20px",
-    display: "block",
-    width: "30%",
-    height: "auto"
+    padding: shouldCollapse ? "100px 7%" : "100px 20%"
   };
 
   if (showingResults) {
@@ -115,9 +108,7 @@ export default function TitleSearch() {
 
       // e.g. selectedRegions=['Slovakia', 'United States', 'Great Britan']
       const selectedRegions = regionCodesArr.map((regionCode) => {
-        const regionName = Object.keys(allRegions).find(
-          (key) => allRegions[key] === regionCode
-        );
+        const regionName = Object.keys(allRegions).find((key) => allRegions[key] === regionCode);
         return regionName;
       });
 
@@ -154,14 +145,14 @@ export default function TitleSearch() {
     setSelectedFilters({
       ...selectedFilters,
       from: { ...selectedFilters.from, value: yearFrom },
-      to: { ...selectedFilters.to, value: yearTo },
+      to: { ...selectedFilters.to, value: yearTo }
     });
   };
 
   const onYearToSelect = (yearTo) => {
     setSelectedFilters({
       ...selectedFilters,
-      to: { ...selectedFilters.to, value: yearTo },
+      to: { ...selectedFilters.to, value: yearTo }
     });
   };
 
@@ -186,12 +177,12 @@ export default function TitleSearch() {
       ...emptyFilters,
       from: {
         value: defaultYearFrom,
-        defaultValue: defaultYearFrom,
+        defaultValue: defaultYearFrom
       },
       to: {
         value: defaultYearTo,
-        defaultValue: defaultYearTo,
-      },
+        defaultValue: defaultYearTo
+      }
     });
   };
 
@@ -213,14 +204,10 @@ export default function TitleSearch() {
       ? selectedFilters.to.value
       : null;
 
-    let selectedRegions = selectedFilters.regions.map(
-      (region) => allRegions[region]
-    );
+    let selectedRegions = selectedFilters.regions.map((region) => allRegions[region]);
     selectedRegions = selectedRegions.length ? selectedRegions : null;
 
-    const selectedKeywords = selectedFilters.keywords.length
-      ? selectedFilters.keywords
-      : null;
+    const selectedKeywords = selectedFilters.keywords.length ? selectedFilters.keywords : null;
 
     if (selectedFrom) {
       searchParams.append("from", `${selectedFrom}-01-01`);
@@ -265,104 +252,126 @@ export default function TitleSearch() {
   };
 
   return (
-    <div style={searchDivStyle}>
-      <form onSubmit={onSubmit}>
-        <Link
-          to="/search"
-          onClick={onAdvancedSearchCancel}
-          style={{ textDecoration: "none" }}
-        >
-          {/* <Typography variant="h1" color="primary">
-            ams
-          </Typography> */}
-          <img style={logoStyle} src="./adversea_logo.svg" alt="adversea" />
-        </Link>
-        <TextField
-          id="outlined-search"
-          color="secondary"
-          value={searchTerm}
-          label="Search"
-          autoComplete="off"
-          variant="outlined"
-          onChange={(event) => handleSearchChange(event.target.value)}
-          fullWidth
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton color="primary" type="submit">
-                  <Search />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-      </form>
+    <Grid style={searchDivStyle} direction="column">
+      <Grid container spacing={2} direction="column">
+        <Grid container direction="column" alignItems="center" justifyContent="center">
+          <Grid item>
+            <Link to="/search" onClick={onAdvancedSearchCancel} style={{ textDecoration: "none" }}>
+              <img src="./adversea_logo.svg" alt="adversea" />
+            </Link>
+          </Grid>
+          <Grid item alignItems="right">
+            <Typography
+              color="error"
+              sx={{
+                marginLeft: 25,
+                marginTop: -2,
+                marginBottom: 2,
+                fontSize: 12
+              }}
+            >
+              Beta version
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography color="secondary">
+              Your adverse media screening portal.
+              {" "}
+              <Link to="/about">Learn more</Link>
+              .
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid item>
+          <form onSubmit={onSubmit}>
+            <TextField
+              id="outlined-search"
+              color="secondary"
+              value={searchTerm}
+              label="Search"
+              autoComplete="off"
+              variant="outlined"
+              onChange={(event) => handleSearchChange(event.target.value)}
+              fullWidth
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton color="primary" type="submit">
+                      <Search />
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+          </form>
+        </Grid>
+      </Grid>
+      <Grid item>
+        <Collapse timeout={1200} in={advancedSearchOpen}>
+          <AdvancedSearch
+            allYearsFromAPI={allYears}
+            allRegionsFromAPI={allRegions}
+            allKeywordsFromAPI={allKeywords}
+            selectedAdvancedFilters={selectedFilters}
+            onYearFromSelect={onYearFromSelect}
+            onYearToSelect={onYearToSelect}
+            onRegionSelect={onRegionSelect}
+            onKeywordSelect={onKeywordSelect}
+            onHide={onAdvancedSearchHide}
+            onClear={onAdvancedSearchClear}
+            onApply={onAdvancedSearchApply}
+            onCancel={onAdvancedSearchCancel}
+          />
+        </Collapse>
+      </Grid>
 
-      <Collapse timeout={1200} in={advancedSearchOpen}>
-        <AdvancedSearch
-          allYearsFromAPI={allYears}
-          allRegionsFromAPI={allRegions}
-          allKeywordsFromAPI={allKeywords}
-          selectedAdvancedFilters={selectedFilters}
-          onYearFromSelect={onYearFromSelect}
-          onYearToSelect={onYearToSelect}
-          onRegionSelect={onRegionSelect}
-          onKeywordSelect={onKeywordSelect}
-          onHide={onAdvancedSearchHide}
-          onClear={onAdvancedSearchClear}
-          onApply={onAdvancedSearchApply}
-          onCancel={onAdvancedSearchCancel}
-        />
-      </Collapse>
+      <Grid item>
+        {!advancedSearchOpen && (
+          <Stack alignItems="center" justifyContent="flex-end" direction="row" spacing={1}>
+            {numSelectedFilters !== 0 && (
+              <ButtonBase onClick={() => setAdvancedSearchOpen(true)}>
+                <Stack direction="row" spacing={0.3}>
+                  <Box
+                    sx={{
+                      textAlign: "center",
+                      borderRadius: "50%",
+                      width: "0.9rem",
+                      height: "0.9rem",
+                      backgroundColor: "primary.main"
+                    }}
+                  >
+                    <Typography fontSize={11} color="white">
+                      {numSelectedFilters}
+                    </Typography>
+                  </Box>
+                  {numSelectedFilters === 1 ? (
+                    <Typography color="primary" fontSize={11}>
+                      applied filter
+                    </Typography>
+                  ) : (
+                    <Typography color="primary" fontSize={11}>
+                      applied filters
+                    </Typography>
+                  )}
+                </Stack>
+              </ButtonBase>
+            )}
+            <Button
+              color="secondary"
+              variant="text"
+              size="small"
+              style={{ textDecoration: "underline" }}
+              onClick={() => setAdvancedSearchOpen(true)}
+            >
+              Advanced search
+            </Button>
+          </Stack>
+        )}
+      </Grid>
 
-      {!advancedSearchOpen && (
-        <Stack
-          alignItems="center"
-          justifyContent="flex-end"
-          direction="row"
-          spacing={1}
-        >
-          {numSelectedFilters !== 0 && (
-            <ButtonBase onClick={() => setAdvancedSearchOpen(true)}>
-              <Stack direction="row" spacing={0.3}>
-                <Box
-                  sx={{
-                    textAlign: "center",
-                    borderRadius: "50%",
-                    width: "0.9rem",
-                    height: "0.9rem",
-                    backgroundColor: "primary.main",
-                  }}
-                >
-                  <Typography fontSize={11} color="white">
-                    {numSelectedFilters}
-                  </Typography>
-                </Box>
-                {numSelectedFilters === 1 ? (
-                  <Typography color="primary" fontSize={11}>
-                    applied filter
-                  </Typography>
-                ) : (
-                  <Typography color="primary" fontSize={11}>
-                    applied filters
-                  </Typography>
-                )}
-              </Stack>
-            </ButtonBase>
-          )}
-          <Button
-            color="secondary"
-            variant="text"
-            size="small"
-            style={{ textDecoration: "underline" }}
-            onClick={() => setAdvancedSearchOpen(true)}
-          >
-            Advanced search
-          </Button>
-        </Stack>
-      )}
-
-      <Outlet />
-    </div>
+      <Grid item>
+        <Outlet />
+      </Grid>
+    </Grid>
   );
 }

@@ -30,7 +30,10 @@ export default function AboutPage() {
                 adverse media screening portal designed to search for natural and legal persons with
                 an unfavourable reputation. the key impulse behind this project is to provide a
                 solution for companies where the integrity of their potential employees or partners
-                is a key to reliable and safe operation.
+                is a key to reliable and safe operation. adversea is a project of Venant
+                non-government organization with headquarters in the European Union. we are
+                committed to the mission of improving every day&apos;s life of people through the
+                implementation of innovative ideas.
               </Typography>
             </Grid>
           </Grid>
@@ -148,6 +151,31 @@ export default function AboutPage() {
                 </Link>
                 {" "}
                 to take quick bearing.
+              </Typography>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item>
+          <Grid container spacing={1} direction="column">
+            <Grid item>
+              <Typography variant="h2" color="primary">
+                privacy policy
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography color="secondary" fontSize="1rem">
+                one of our main priorities is the privacy of our visitors.
+                {" "}
+                <Link
+                  href="https://www.privacypolicygenerator.info/live.php?token=Efpd5PrwYduDf9W7A7fSPxHDpF7Ahgvn"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  the privacy policy document
+                </Link>
+                {" "}
+                contains types of information that is collected and recorded by adversea and how we
+                use it.
               </Typography>
             </Grid>
           </Grid>
