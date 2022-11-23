@@ -66,12 +66,11 @@ export function ArchivedArticle({ url = "", displayArticle = undefined }) {
     setLoadingProgress(0);
     setIsloading(true);
 
-    apiCall(`/api/archive/search?link=${url}`).then((result) => {
+    apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/archive?link=${url}`).then((result) => {
       if (result.ok) {
         setTimeout(() => setLoadingProgress(100), 100);
         setIsloading(false);
-        setArticle(result.data);
-        console.log(result.data);
+        setArticle(result.article);
       } else {
         setTimeout(() => setLoadingProgress(2), 500);
         setError(result.msg);

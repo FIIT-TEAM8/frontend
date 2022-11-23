@@ -140,17 +140,32 @@ export default function AboutPage() {
             </Grid>
             <Grid item>
               <Typography color="secondary" fontSize="1rem">
-                direct access to articles is provided by API. visit the
+                direct access to articles is provided by API. if you would like to use our API for your project, contact us for further information.
+              </Typography>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item>
+          <Grid container spacing={1} direction="column">
+            <Grid item>
+              <Typography variant="h2" color="primary">
+                privacy policy
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography color="secondary" fontSize="1rem">
+                one of our main priorities is the privacy of our visitors.
                 {" "}
                 <Link
-                  href="https://app.swaggerhub.com/apis-docs/AMS89/AMS/1.0.0"
+                  href="https://www.privacypolicygenerator.info/live.php?token=Efpd5PrwYduDf9W7A7fSPxHDpF7Ahgvn"
                   target="_blank"
                   rel="noopener"
                 >
-                  documentation page
+                  the privacy policy document
                 </Link>
                 {" "}
-                to take quick bearing.
+                contains types of information that is collected and recorded by adversea and how we
+                use it.
               </Typography>
             </Grid>
           </Grid>

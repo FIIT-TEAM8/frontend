@@ -49,7 +49,8 @@ export default function ReportPage() {
     if (articlesIds.length <= 0) {
       return;
     }
-    apiCall(`/api/data/report?ids=[${articlesIds.join(", ")}]`, "GET").then(
+    // @ts-ignore: Property '_env_' does not exist on type 'Window & typeof globalThis'.
+    apiCall(window._env_.REACT_APP_NODE_SERVER_URL, `/api/data/report?ids=[${articlesIds.join(", ")}]`, "GET").then(
       (result: APIResponse) => {
         if (result.ok && result.data && result.data.results) {
           setArticlesFromReport([...result.data.results]);
@@ -99,6 +100,8 @@ export default function ReportPage() {
     );
 
     const downloadResult = await apiCall(
+      // @ts-ignore: Property '_env_' does not exist on type 'Window & typeof globalThis'.
+      window._env_.REACT_APP_NODE_SERVER_URL,
       `/api/report/download?ids=[${articlesIds.join(", ")}]`,
       "POST",
       {

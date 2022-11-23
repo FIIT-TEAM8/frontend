@@ -7,15 +7,20 @@ const DEV: boolean = process.env.NODE_ENV !== "production";
 
 let MODE = "same-origin";
 let CREDENTIALS = "same-origin";
+let headers = { "Content-Type": "application/json" };
 
 if (DEV) {
   MODE = "cors";
-  CREDENTIALS = "include";
+  CREDENTIALS = "omit";
+  headers = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+  };
 }
 
 export async function refreshToken() {
   // eslint-disable-next-line no-use-before-define
-  const response = await apiCall("/api/user/token", "GET", undefined, true);
+  const response = await apiCall(window._env_.REACT_APP_NODE_SERVER_URL, "/api/user/token", "GET", undefined, true);
   if (response.status === 403 || response.status === 401) {
     Cookies.remove("__authToken");
     Cookies.remove("__refToken");
@@ -25,13 +30,13 @@ export async function refreshToken() {
 }
 
 export async function apiCall(
+  host = window._env_.REACT_APP_NODE_SERVER_URL,
   endpoint = "",
   method = "GET",
   data: any = null,
   ignoreAuthError = false
 ): Promise<APIResponse> {
-  const baseUrl = window._env_.REACT_APP_NODE_SERVER_URL;
-  const url: string = baseUrl + endpoint;
+  const url: string = host + endpoint;
 
   let response: APIResponse = {};
 
@@ -41,9 +46,7 @@ export async function apiCall(
     mode: MODE, // no-cors, *cors, same-origin
     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
     credentials: CREDENTIALS, // include, *same-origin, omit
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers,
     redirect: "follow", // manual, *follow, error
     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
     // body: JSON.stringify(data) // body data type must match "Content-Type" header
@@ -85,7 +88,6 @@ export async function apiCall(
       const contentType = response.headers.get("content-type"); // ADD content type to each response???
 
       if (contentType === "application/pdf") {
-        result.ok = true;
         result.blobData = response;
       } else {
         result = await response.json();
@@ -99,6 +101,7 @@ export async function apiCall(
     };
   }
   result.status = response.status;
+  result.ok = true ? result.status === 200 : false;
   return result; // parses JSON response into native JavaScript objects
 }
 
