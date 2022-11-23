@@ -87,8 +87,6 @@ export default class RegionsPieChart extends PureComponent<{
     const { activeIndex }: any = this.state;
     const { regions = [] } = this.props;
 
-    console.log(regions);
-
     return (
       <ResponsiveContainer width="100%" height={300}>
         <PieChart width={300} height={300}>
