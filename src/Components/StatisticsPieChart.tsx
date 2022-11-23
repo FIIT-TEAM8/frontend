@@ -99,7 +99,7 @@ export default class RegionsPieChart extends PureComponent<{
             innerRadius={70}
             outerRadius={90}
             fill="#8884d8"
-            dataKey="number"
+            dataKey="value"
             onMouseEnter={this.onPieEnter}
           >
             {regions.map((entry: any, index: number) => (

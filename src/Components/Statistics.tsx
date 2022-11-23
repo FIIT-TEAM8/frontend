@@ -5,7 +5,7 @@ import {
   LineChart, Line, CartesianGrid, BarChart, Bar, Legend
 } from "recharts";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { apiCall } from "../Utils/APIConnector";
+// import { apiCall } from "../Utils/APIConnector";
 import RegionsPieChart from "./StatisticsPieChart";
 import myData from "./test.json";
 
@@ -15,16 +15,28 @@ export default function Statistics() {
   // const [isLoaded, setIsLoaded] = useState(false);
   // const [lastSearched, setLastSearched] = useState("null");
   // const [articles, setArticles] = useState(0 as any);
+  const [statsData, setStatsData] = useState({});
   const [topCrimes, setTopCrimes] = useState({} as any);
-  const [regions] = useState([
-    { name: "Great Britain", number: 20 },
-    { name: "Slovakia", number: 17 },
-    { name: "Romania", number: 35 },
-    { name: "France", number: 12 },
-    { name: "Italy", number: 28 },
-  ]);
+  const [regions, setRegions] = useState([] as any);
   const [query, setQuery] = useState("" as any);
   const navigate = useNavigate();
+
+  interface GraphData {
+    name: string;
+    value: number;
+  }
+  function generateGraphData(name: string, value: number): GraphData {
+    return { name, value };
+  }
+  function getGraphData(dataNames: string[], dataValues: number[]): GraphData[] {
+    const result: GraphData[] = [];
+
+    for (let i = 0; i < 7; i += 1) {
+      result.push(generateGraphData(dataNames[i], dataValues[i]));
+    }
+
+    return result;
+  }
 
   useEffect(() => {
     // setIsLoaded(false);
@@ -36,46 +48,39 @@ export default function Statistics() {
 
     setQuery(searchParams.get("q"));
 
-    apiCall(`/stats/api/search?${searchParams.toString()}`, "GET").then(
-      (result) => {
-        if (result.ok) {
-          // setArticles(result.data?.stats.articlesCount);
-          // setTopCrimes(result.data?.stats.stats.articlesByCrime);
-          // setIsLoaded(true);
-          console.log("ok");
-        }
-      }
-    );
+    // apiCall(`/stats/api/search?${searchParams.toString()}`, "GET").then(
+    //   (result) => {
+    //     if (result.ok) {
+    //       // setIsLoaded(true);
+    //       setStatsData(result.data?.stats);
+    //       console.log("ok");
+    //     }
+    //   }
+    // );
 
-    // for ( var key in myData.stats.articles_by_crime ){
-    //   console.log((myData.stats.articles_by_crime as any)[key].length);
-    // }
-    const keys: string[] = [];
-    Object.keys(myData.stats.articles_by_crime).forEach((k) => keys.push(k));
-    keys.forEach((k) => console.log(k));
+    fetch(`https://adversea.com/stats/api/search?${searchParams.toString()}`)
+      .then((response) => response.json())
+      .then((data) => setStatsData(data.message));
 
-    const values: number[] = [];
-    Object.values(myData.stats.articles_by_crime).forEach((k) => values.push(k.length));
-    values.forEach((k) => console.log(k));
+    console.log(statsData);
 
-    interface Crime {
-      name: string;
-      value: number;
-    }
-    function createCrime(name: string, value: number): Crime {
-      return { name, value };
-    }
-    function crimes(crimeNames: string[], crimeValues: number[]): Crime[] {
-      const result: Crime[] = [];
+    // getting top crimes
+    const crimeKeys: string[] = [];
+    Object.keys(myData.stats.articles_by_crime).forEach((k) => crimeKeys.push(k));
 
-      for (let i = 0; i < 7; i += 1) {
-        result.push(createCrime(crimeNames[i], crimeValues[i]));
-      }
+    const crimeNumbers: number[] = [];
+    Object.values(myData.stats.articles_by_crime).forEach((n) => crimeNumbers.push(n.length));
 
-      return result;
-    }
-    setTopCrimes(crimes(keys, values));
-    console.log(crimes(keys, values));
+    // getting regions
+    const regionsKeys: string[] = [];
+    Object.keys(myData.stats.articles_by_region).forEach((k) => regionsKeys.push(k));
+
+    const regionsNumbers: number[] = [];
+    Object.values(myData.stats.articles_by_region).forEach((n) => regionsNumbers.push(n.length));
+
+    setTopCrimes(getGraphData(crimeKeys, crimeNumbers));
+    setRegions(getGraphData(regionsKeys, regionsNumbers));
+    console.log(getGraphData(regionsKeys, regionsNumbers));
   }, [searchParams]);
 
   const articles = [
@@ -87,15 +92,6 @@ export default function Statistics() {
     { year: "2021", articles: 45 },
     { year: "2022", articles: 67 },
   ];
-  // const topCrimes = [
-  //   { crime: "assault", number: 20 },
-  //   { crime: "money laundering", number: 35 },
-  //   { crime: "murder", number: 12 },
-  //   { crime: "terrorism", number: 28 },
-  //   { crime: "hijacking", number: 15 },
-  //   { crime: "human trafficing", number: 45 },
-  //   { crime: "arsony", number: 10 },
-  // ];
   // const languages = [
   //   { language: "english", number: 20 },
   //   { language: "italian", number: 35 },
