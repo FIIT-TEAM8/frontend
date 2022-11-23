@@ -43,6 +43,16 @@ export default function TitleSearch() {
     padding: shouldCollapse ? "100px 7%" : "100px 20%"
   };
 
+  const betaStyle = {
+    color: "rgb(255, 0, 68)",
+    marginRight: "36%",
+    textAlign: "right",
+    top: "-20px",
+    zIndex: "10",
+    position: "relative",
+    fontSize: "10px"
+  };
+
   if (showingResults) {
     searchDivStyle.padding = shouldCollapse ? "20px 7%" : "20px 20%";
   }
@@ -195,7 +205,7 @@ export default function TitleSearch() {
     }
 
     searchParams.append("q", searchTerm);
-    searchParams.append("page", 1);
+    // searchParams.append("page", 1);
 
     const selectedFrom = selectedFilters.from.value !== selectedFilters.from.defaultValue
       ? selectedFilters.from.value
@@ -224,7 +234,7 @@ export default function TitleSearch() {
 
     setShowingResults(true);
     setSearchParams(searchParams);
-    navigate(`results?${searchParams.toString()}`);
+    navigate(`stats?${searchParams.toString()}`);
   };
 
   const onAdvancedSearchApply = () => {
@@ -256,8 +266,9 @@ export default function TitleSearch() {
       <Grid container spacing={2} direction="column">
         <Grid container direction="column" alignItems="center" justifyContent="center">
           <Grid item>
-            <Link to="/search" onClick={onAdvancedSearchCancel} style={{ textDecoration: "none" }}>
+            <Link to="/" onClick={onAdvancedSearchCancel} style={{ textDecoration: "none" }}>
               <img src="./adversea_logo.svg" alt="adversea" />
+              <p style={betaStyle}>Beta version</p>
             </Link>
           </Grid>
           <Grid item alignItems="right">
