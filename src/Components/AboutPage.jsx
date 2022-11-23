@@ -140,17 +140,7 @@ export default function AboutPage() {
             </Grid>
             <Grid item>
               <Typography color="secondary" fontSize="1rem">
-                direct access to articles is provided by API. visit the
-                {" "}
-                <Link
-                  href="https://app.swaggerhub.com/apis-docs/AMS89/AMS/1.0.0"
-                  target="_blank"
-                  rel="noopener"
-                >
-                  documentation page
-                </Link>
-                {" "}
-                to take quick bearing.
+                direct access to articles is provided by API. if you would like to use our API for your project, contact us for further information.
               </Typography>
             </Grid>
           </Grid>
