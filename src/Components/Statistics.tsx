@@ -1,4 +1,10 @@
-import { Grid, Button, Typography } from "@mui/material";
+import {
+  Grid,
+  Button,
+  Typography,
+  Stack,
+  CircularProgress
+} from "@mui/material";
 import React, { useState, useEffect } from "react";
 import {
   Tooltip, ResponsiveContainer, XAxis, YAxis,
@@ -7,7 +13,6 @@ import {
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { apiCall } from "../Utils/APIConnector";
 import RegionsPieChart from "./StatisticsPieChart";
-import myData from "./robo.json";
 
 type regionsType = {
   [key: string]: string
@@ -50,7 +55,7 @@ function mapRegions(regionsKeys: string[]): any {
 export default function Statistics() {
   const [searchParams] = useSearchParams();
   // const [actResults, setActResults] = useState([]);
-  // const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   // const [lastSearched, setLastSearched] = useState("null");
   // const [articles, setArticles] = useState(0 as any);
   const [statsData, setStatsData] = useState({} as any);
@@ -81,8 +86,49 @@ export default function Statistics() {
     return result;
   }
 
+  interface StatsData {
+    statsarticlesCount: number;
+    statsQuery: string;
+    searchFrom: string;
+    searchTo: string;
+    stats: {};
+    statsTotalResults: number;
+    status: number;
+    ok: boolean;
+  }
+  function generateStatsData(
+    statsarticlesCount: number,
+    statsQuery: string,
+    searchFrom: string,
+    searchTo: string,
+    stats: {},
+    statsTotalResults: number,
+    status: number,
+    ok: boolean
+  ): StatsData {
+    return {
+      statsarticlesCount, statsQuery, searchFrom, searchTo, stats, statsTotalResults, status, ok
+    };
+  }
+  function getStatsData(resultValues: string[]): StatsData[] {
+    const result: StatsData[] = [];
+
+    result.push(generateStatsData(
+      +resultValues[0],
+      resultValues[1],
+      resultValues[2],
+      resultValues[3],
+      resultValues[4],
+      +resultValues[5],
+      +resultValues[6],
+      (/true/i).test(resultValues[7])
+    ));
+
+    return result;
+  }
+
   useEffect(() => {
-    // setIsLoaded(false);
+    setIsLoaded(false);
 
     // const q = searchParams.get("q");
     // if (q !== lastSearched) {
@@ -91,37 +137,45 @@ export default function Statistics() {
 
     setQuery(searchParams.get("q"));
 
-    apiCall(`/stats/api/search?${searchParams.toString()}`, "GET").then(
+    apiCall(
+      "http://localhost:8010/proxy/",
+      `stats/api/search?${searchParams.toString()}`,
+      "GET"
+    ).then(
       (result) => {
         if (result.ok) {
-          // setIsLoaded(true);
-          console.log(result.data?.stats);
-          setStatsData(result.data?.results);
+          const reslutKeys: string[] = [];
+          const resultValues: string[] = [];
+          Object.keys(result).forEach((k) => reslutKeys.push(k));
+          Object.values(result).forEach((val) => resultValues.push(val));
+
+          setStatsData(getStatsData(resultValues));
+          setIsLoaded(true);
         }
       }
     );
 
-    // fetch(`/results?${searchParams.toString()}`)
-    //   .then((response) => response.json())
-    //   .then((data) => setStatsData(data.message));
-
-    console.log(statsData);
-    setTotalResuls(myData.total_results);
-    setArticlesCount(myData.articles_count);
+    console.log(statsData[0].statsarticlesCount);
+    setTotalResuls(statsData[0].statsTotalResults);
+    setArticlesCount(statsData[0].statsarticlesCount);
 
     // getting top crimes
     const crimeKeys: string[] = [];
-    Object.keys(myData.stats.articles_by_crime).forEach((k) => crimeKeys.push(k));
+    Object.keys(statsData[0].stats.articles_by_crime).forEach((k) => crimeKeys.push(k));
 
     const crimeNumbers: number[] = [];
-    Object.values(myData.stats.articles_by_crime).forEach((n) => crimeNumbers.push(n.length));
+    Object.values(statsData[0].stats.articles_by_crime).forEach(
+      (n: any) => crimeNumbers.push(n.length)
+    );
 
     // getting regions
     const regionsKeys: string[] = [];
-    Object.keys(myData.stats.articles_by_region).forEach((k) => regionsKeys.push(k));
+    Object.keys(statsData[0].stats.articles_by_region).forEach((k) => regionsKeys.push(k));
 
     const regionsNumbers: number[] = [];
-    Object.values(myData.stats.articles_by_region).forEach((n) => regionsNumbers.push(n.length));
+    Object.values(statsData[0].stats.articles_by_region).forEach(
+      (n: any) => regionsNumbers.push(n.length)
+    );
 
     const regionNames = mapRegions(regionsKeys);
 
@@ -166,177 +220,196 @@ export default function Statistics() {
   const regionsGraphText2 = `. More specifically, we found ${regions[0].value} articles about the searched person, that were published in this country.`;
   const datesGraphText = `On the line graph above we can see how articles about ${query} were published during the given time period. From this graph, we can see that most articles about the searched person were published in ${articles[0].year}.`;
 
-  return (
-    <div className="main">
-      <Grid item container justifyContent="center" spacing={0} marginTop={3} marginBottom={3} columns={16}>
-        <Grid item xs="auto">
-          <Button
-            size="large"
-            color="primary"
-            variant="text"
-            sx={{
-              borderRight: "1px solid",
-              borderRadius: "0",
-              width: "28vw"
-            }}
-            style={{ backgroundColor: "rgb(240, 251, 250)" }}
-          >
-            statistics
-          </Button>
-        </Grid>
+  if (isLoaded) {
+    return (
+      <div className="main">
+        <Grid item container justifyContent="center" spacing={0} marginTop={3} marginBottom={3} columns={16}>
+          <Grid item xs="auto">
+            <Button
+              size="large"
+              color="primary"
+              variant="text"
+              sx={{
+                borderRight: "1px solid",
+                borderRadius: "0",
+                width: "28vw"
+              }}
+              style={{ backgroundColor: "rgb(240, 251, 250)" }}
+            >
+              statistics
+            </Button>
+          </Grid>
 
-        <Grid item xs="auto">
-          <Button
-            size="large"
-            color="secondary"
-            variant="text"
-            onClick={showSearchResults}
-            sx={{
-              width: "28vw"
-            }}
-          >
-            articles
-          </Button>
-        </Grid>
-      </Grid>
-      <Grid item container justifyContent="center" spacing={1}>
-        <Grid item>
-          <Typography
-            sx={{
-              marginTop: 2,
-              marginBottom: 2,
-              fontSize: 30,
-              fontWeight: 500
-            }}
-            color="primary"
-          >
-            {statsText}
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Typography
-            sx={{
-              marginTop: 2,
-              marginBottom: 2,
-              fontSize: 30,
-              fontWeight: 500
-            }}
-            color="secondary"
-          >
-            {query}
-          </Typography>
-        </Grid>
-      </Grid>
-      <Grid item container justifyContent="center" spacing={0} direction="column" style={{ textAlign: "center" }}>
-        <Grid item>
-          <Typography
-            sx={{
-              fontSize: 15,
-              fontWeight: 200
-            }}
-            color="secondary"
-          >
-            {resultsText}
-            {totalResults}
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Typography
-            sx={{
-              fontSize: 15,
-              fontWeight: 200,
-              marginBottom: 4
-            }}
-            color="secondary"
-          >
-            {statsResultsText}
-          </Typography>
-        </Grid>
-      </Grid>
-      <Grid container spacing={1} marginBottom={2} style={{ textAlign: "left" }}>
-        <Grid item xs={6}>
-          <ResponsiveContainer className="topCrimesChart" width="100%" height={270}>
-            <BarChart
-              width={300}
-              height={200}
-              data={topCrimes}
-              layout="vertical"
-              margin={{
-                top: 5, bottom: 5, left: 50
-              }}
-              style={{ fontSize: 12 }}
-            >
-              <XAxis type="number" />
-              <YAxis type="category" dataKey="name" />
-              <CartesianGrid strokeDasharray="3 3" />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="value" name="number of crimes" fill="#7163B4" />
-            </BarChart>
-          </ResponsiveContainer>
-        </Grid>
-        <Grid item xs={5} marginLeft={5}>
-          <Typography color="primary" marginTop={4} fontSize={25}>
-            {crimesGraphTitle}
-          </Typography>
-          <Typography marginTop={1} color="secondary" display="inline">
-            {topCrimesGraphText1}
-          </Typography>
-          <Typography color="primary" display="inline">
-            {topCrimes[0].name.toLowerCase()}
-          </Typography>
-          <Typography color="secondary" display="inline">
-            {topCrimesGraphText2}
-          </Typography>
-        </Grid>
-      </Grid>
-      <Grid container spacing={0} justifyContent="center" style={{ textAlign: "right" }}>
-        <Grid item xs={4}>
-          <Typography marginTop={7} color="primary" fontSize={25}>
-            {regionsGraphTitle}
-          </Typography>
-          <Typography marginTop={1} color="secondary" display="inline">
-            {regionsGraphText1}
-          </Typography>
-          <Typography color="primary" display="inline">
-            {regions[0].name}
-          </Typography>
-          <Typography color="secondary" display="inline">
-            {regionsGraphText2}
-          </Typography>
-        </Grid>
-        <Grid item xs={7} marginLeft={2}>
-          <RegionsPieChart regions={regions} />
-        </Grid>
-      </Grid>
-      <Grid container spacing={1} justifyContent="center" style={{ textAlign: "center" }}>
-        <Grid item xs={12}>
-          <ResponsiveContainer width="100%" height={180}>
-            <LineChart
-              width={500}
-              height={200}
-              data={articles}
-              margin={{
-                top: 20
+          <Grid item xs="auto">
+            <Button
+              size="large"
+              color="secondary"
+              variant="text"
+              onClick={showSearchResults}
+              sx={{
+                width: "28vw"
               }}
             >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="year" />
-              <YAxis />
-              <Tooltip />
-              <Line connectNulls type="monotone" dataKey="articles" stroke="#9D4993" fill="#9D4993" />
-            </LineChart>
-          </ResponsiveContainer>
+              articles
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item xs={8} style={{ textAlign: "center" }}>
-          <Typography marginTop={2} color="primary" fontSize={25}>
-            {datesGraphTitle}
-          </Typography>
-          <Typography marginTop={1} marginBottom={7} color="secondary">
-            {datesGraphText}
-          </Typography>
+        <Grid item container justifyContent="center" spacing={1}>
+          <Grid item>
+            <Typography
+              sx={{
+                marginTop: 2,
+                marginBottom: 2,
+                fontSize: 30,
+                fontWeight: 500
+              }}
+              color="primary"
+            >
+              {statsText}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography
+              sx={{
+                marginTop: 2,
+                marginBottom: 2,
+                fontSize: 30,
+                fontWeight: 500
+              }}
+              color="secondary"
+            >
+              {query}
+            </Typography>
+          </Grid>
         </Grid>
-      </Grid>
+        <Grid item container justifyContent="center" spacing={0} direction="column" style={{ textAlign: "center" }}>
+          <Grid item>
+            <Typography
+              sx={{
+                fontSize: 15,
+                fontWeight: 200
+              }}
+              color="secondary"
+            >
+              {resultsText}
+              {totalResults}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography
+              sx={{
+                fontSize: 15,
+                fontWeight: 200,
+                marginBottom: 4
+              }}
+              color="secondary"
+            >
+              {statsResultsText}
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid container spacing={1} marginBottom={2} style={{ textAlign: "left" }}>
+          <Grid item xs={6}>
+            <ResponsiveContainer className="topCrimesChart" width="100%" height={270}>
+              <BarChart
+                width={300}
+                height={200}
+                data={topCrimes}
+                layout="vertical"
+                margin={{
+                  top: 5, bottom: 5, left: 50
+                }}
+                style={{ fontSize: 12 }}
+              >
+                <XAxis type="number" />
+                <YAxis type="category" dataKey="name" />
+                <CartesianGrid strokeDasharray="3 3" />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="value" name="number of crimes" fill="#7163B4" />
+              </BarChart>
+            </ResponsiveContainer>
+          </Grid>
+          <Grid item xs={5} marginLeft={5}>
+            <Typography color="primary" marginTop={4} fontSize={25}>
+              {crimesGraphTitle}
+            </Typography>
+            <Typography marginTop={1} color="secondary" display="inline">
+              {topCrimesGraphText1}
+            </Typography>
+            <Typography color="primary" display="inline">
+              {topCrimes[0].name.toLowerCase()}
+            </Typography>
+            <Typography color="secondary" display="inline">
+              {topCrimesGraphText2}
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid container spacing={0} justifyContent="center" style={{ textAlign: "right" }}>
+          <Grid item xs={4}>
+            <Typography marginTop={7} color="primary" fontSize={25}>
+              {regionsGraphTitle}
+            </Typography>
+            <Typography marginTop={1} color="secondary" display="inline">
+              {regionsGraphText1}
+            </Typography>
+            <Typography color="primary" display="inline">
+              {regions[0].name}
+            </Typography>
+            <Typography color="secondary" display="inline">
+              {regionsGraphText2}
+            </Typography>
+          </Grid>
+          <Grid item xs={7} marginLeft={2}>
+            <RegionsPieChart regions={regions} />
+          </Grid>
+        </Grid>
+        <Grid container spacing={1} justifyContent="center" style={{ textAlign: "center" }}>
+          <Grid item xs={12}>
+            <ResponsiveContainer width="100%" height={180}>
+              <LineChart
+                width={500}
+                height={200}
+                data={articles}
+                margin={{
+                  top: 20
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="year" />
+                <YAxis />
+                <Tooltip />
+                <Line connectNulls type="monotone" dataKey="articles" stroke="#9D4993" fill="#9D4993" />
+              </LineChart>
+            </ResponsiveContainer>
+          </Grid>
+          <Grid item xs={8} style={{ textAlign: "center" }}>
+            <Typography marginTop={2} color="primary" fontSize={25}>
+              {datesGraphTitle}
+            </Typography>
+            <Typography marginTop={1} marginBottom={7} color="secondary">
+              {datesGraphText}
+            </Typography>
+          </Grid>
+        </Grid>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {totalResults === 0 ? (
+        <div style={{ paddingTop: "2" }} />
+      ) : (
+        <Typography pt={2} color="secondary">
+          {totalResults}
+          {" "}
+          results found.
+        </Typography>
+      )}
+      <Stack spacing={1} sx={{ pt: 2 }} alignItems="center">
+        <CircularProgress size={50} thickness={2} color="secondary" />
+      </Stack>
     </div>
   );
 }
