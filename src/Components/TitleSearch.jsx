@@ -43,16 +43,6 @@ export default function TitleSearch() {
     padding: shouldCollapse ? "100px 7%" : "100px 20%"
   };
 
-  const betaStyle = {
-    color: "rgb(255, 0, 68)",
-    marginRight: "36%",
-    textAlign: "right",
-    top: "-20px",
-    zIndex: "10",
-    position: "relative",
-    fontSize: "10px"
-  };
-
   if (showingResults) {
     searchDivStyle.padding = shouldCollapse ? "20px 7%" : "20px 20%";
   }
@@ -268,7 +258,6 @@ export default function TitleSearch() {
           <Grid item>
             <Link to="/" onClick={onAdvancedSearchCancel} style={{ textDecoration: "none" }}>
               <img src="./adversea_logo.svg" alt="adversea" />
-              <p style={betaStyle}>Beta version</p>
             </Link>
           </Grid>
           <Grid item alignItems="right">

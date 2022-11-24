@@ -5,9 +5,47 @@ import {
   LineChart, Line, CartesianGrid, BarChart, Bar, Legend
 } from "recharts";
 import { useSearchParams, useNavigate } from "react-router-dom";
-// import { apiCall } from "../Utils/APIConnector";
+import { apiCall } from "../Utils/APIConnector";
 import RegionsPieChart from "./StatisticsPieChart";
-import myData from "./test.json";
+import myData from "./robo.json";
+
+type regionsType = {
+  [key: string]: string
+}
+
+const regionMap:regionsType = {
+  Slovakia: "sk",
+  "United States": "us",
+  "Great Britan": "gb",
+  Bulgaria: "bg",
+  "Czech Republic": "cz",
+  France: "fr",
+  Belgium: "be",
+  Germany: "de",
+  Austria: "at",
+  Switzerland: "ch",
+  Greece: "gr",
+  Netherlands: "nl",
+  Hungary: "hu",
+  Italy: "it",
+  Latvia: "lv",
+  Lithuania: "lt",
+  Poland: "pl",
+  Portugal: "pt",
+  Romania: "ro",
+  Slovenia: "sl",
+  Ukraine: "ua"
+};
+
+function mapRegions(regionsKeys: string[]): any {
+  // e.g. selectedRegions=['Slovakia', 'United States', 'Great Britan']
+  const regions = regionsKeys.map((regionCode) => {
+    const regionName = Object.keys(regionMap).find((key) => regionMap[key] === regionCode);
+    return regionName;
+  });
+
+  return regions;
+}
 
 export default function Statistics() {
   const [searchParams] = useSearchParams();
@@ -15,9 +53,11 @@ export default function Statistics() {
   // const [isLoaded, setIsLoaded] = useState(false);
   // const [lastSearched, setLastSearched] = useState("null");
   // const [articles, setArticles] = useState(0 as any);
-  const [statsData, setStatsData] = useState({});
+  const [statsData, setStatsData] = useState({} as any);
   const [topCrimes, setTopCrimes] = useState({} as any);
   const [regions, setRegions] = useState([] as any);
+  const [totalResults, setTotalResuls] = useState(0);
+  const [articlesCount, setArticlesCount] = useState(0);
   const [query, setQuery] = useState("" as any);
   const navigate = useNavigate();
 
@@ -29,11 +69,14 @@ export default function Statistics() {
     return { name, value };
   }
   function getGraphData(dataNames: string[], dataValues: number[]): GraphData[] {
-    const result: GraphData[] = [];
+    let result: GraphData[] = [];
 
-    for (let i = 0; i < 7; i += 1) {
+    for (let i = 0; i < dataNames.length; i += 1) {
       result.push(generateGraphData(dataNames[i], dataValues[i]));
     }
+
+    const sortedData = result.slice().sort((a, b) => b.value - a.value);
+    result = sortedData.slice(0, 7);
 
     return result;
   }
@@ -48,21 +91,23 @@ export default function Statistics() {
 
     setQuery(searchParams.get("q"));
 
-    // apiCall(`/stats/api/search?${searchParams.toString()}`, "GET").then(
-    //   (result) => {
-    //     if (result.ok) {
-    //       // setIsLoaded(true);
-    //       setStatsData(result.data?.stats);
-    //       console.log("ok");
-    //     }
-    //   }
-    // );
+    apiCall(`/stats/api/search?${searchParams.toString()}`, "GET").then(
+      (result) => {
+        if (result.ok) {
+          // setIsLoaded(true);
+          console.log(result.data?.stats);
+          setStatsData(result.data?.results);
+        }
+      }
+    );
 
-    fetch(`https://adversea.com/stats/api/search?${searchParams.toString()}`)
-      .then((response) => response.json())
-      .then((data) => setStatsData(data.message));
+    // fetch(`/results?${searchParams.toString()}`)
+    //   .then((response) => response.json())
+    //   .then((data) => setStatsData(data.message));
 
     console.log(statsData);
+    setTotalResuls(myData.total_results);
+    setArticlesCount(myData.articles_count);
 
     // getting top crimes
     const crimeKeys: string[] = [];
@@ -78,9 +123,10 @@ export default function Statistics() {
     const regionsNumbers: number[] = [];
     Object.values(myData.stats.articles_by_region).forEach((n) => regionsNumbers.push(n.length));
 
+    const regionNames = mapRegions(regionsKeys);
+
     setTopCrimes(getGraphData(crimeKeys, crimeNumbers));
-    setRegions(getGraphData(regionsKeys, regionsNumbers));
-    console.log(getGraphData(regionsKeys, regionsNumbers));
+    setRegions(getGraphData(regionNames, regionsNumbers));
   }, [searchParams]);
 
   const articles = [
@@ -103,11 +149,22 @@ export default function Statistics() {
   // ];
 
   const showSearchResults = () => {
-    navigate(`/search/results?${searchParams.toString()}`);
+    navigate(`/results?${searchParams.toString()}`);
   };
 
   const statsText = "statistics for: ";
-  const graphsText = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
+  const resultsText = "total articles found: ";
+  const statsResultsText = `statistics generated from ${articlesCount} articles`;
+
+  const crimesGraphTitle = "top crimes";
+  const regionsGraphTitle = "regions";
+  const datesGraphTitle = "articles in time";
+
+  const topCrimesGraphText1 = `We found the top 7 crimes ${query} was linked to. This person is most associated with the crime of `;
+  const topCrimesGraphText2 = `. We found exactly ${topCrimes[0].value} articles related to this crime and ${query}.`;
+  const regionsGraphText1 = `Most articles about ${query} were published in `;
+  const regionsGraphText2 = `. More specifically, we found ${regions[0].value} articles about the searched person, that were published in this country.`;
+  const datesGraphText = `On the line graph above we can see how articles about ${query} were published during the given time period. From this graph, we can see that most articles about the searched person were published in ${articles[0].year}.`;
 
   return (
     <div className="main">
@@ -120,8 +177,9 @@ export default function Statistics() {
             sx={{
               borderRight: "1px solid",
               borderRadius: "0",
-              width: 300
+              width: "28vw"
             }}
+            style={{ backgroundColor: "rgb(240, 251, 250)" }}
           >
             statistics
           </Button>
@@ -134,7 +192,7 @@ export default function Statistics() {
             variant="text"
             onClick={showSearchResults}
             sx={{
-              width: 300
+              width: "28vw"
             }}
           >
             articles
@@ -145,18 +203,57 @@ export default function Statistics() {
         <Grid item>
           <Typography
             sx={{
-              margin: 2,
-              marginBottom: 6,
+              marginTop: 2,
+              marginBottom: 2,
               fontSize: 30,
               fontWeight: 500
             }}
+            color="primary"
           >
             {statsText}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography
+            sx={{
+              marginTop: 2,
+              marginBottom: 2,
+              fontSize: 30,
+              fontWeight: 500
+            }}
+            color="secondary"
+          >
             {query}
           </Typography>
         </Grid>
       </Grid>
-      <Grid container spacing={5} style={{ textAlign: "center" }}>
+      <Grid item container justifyContent="center" spacing={0} direction="column" style={{ textAlign: "center" }}>
+        <Grid item>
+          <Typography
+            sx={{
+              fontSize: 15,
+              fontWeight: 200
+            }}
+            color="secondary"
+          >
+            {resultsText}
+            {totalResults}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography
+            sx={{
+              fontSize: 15,
+              fontWeight: 200,
+              marginBottom: 4
+            }}
+            color="secondary"
+          >
+            {statsResultsText}
+          </Typography>
+        </Grid>
+      </Grid>
+      <Grid container spacing={1} marginBottom={2} style={{ textAlign: "left" }}>
         <Grid item xs={6}>
           <ResponsiveContainer className="topCrimesChart" width="100%" height={270}>
             <BarChart
@@ -165,8 +262,9 @@ export default function Statistics() {
               data={topCrimes}
               layout="vertical"
               margin={{
-                top: 5, bottom: 5
+                top: 5, bottom: 5, left: 50
               }}
+              style={{ fontSize: 12 }}
             >
               <XAxis type="number" />
               <YAxis type="category" dataKey="name" />
@@ -178,30 +276,48 @@ export default function Statistics() {
           </ResponsiveContainer>
         </Grid>
         <Grid item xs={5} marginLeft={5}>
-          <Typography marginTop={7}>
-            {graphsText}
+          <Typography color="primary" marginTop={4} fontSize={25}>
+            {crimesGraphTitle}
+          </Typography>
+          <Typography marginTop={1} color="secondary" display="inline">
+            {topCrimesGraphText1}
+          </Typography>
+          <Typography color="primary" display="inline">
+            {topCrimes[0].name.toLowerCase()}
+          </Typography>
+          <Typography color="secondary" display="inline">
+            {topCrimesGraphText2}
           </Typography>
         </Grid>
       </Grid>
-      <Grid container spacing={8} style={{ textAlign: "center" }}>
+      <Grid container spacing={0} justifyContent="center" style={{ textAlign: "right" }}>
         <Grid item xs={4}>
-          <Typography marginTop={10}>
-            {graphsText}
+          <Typography marginTop={7} color="primary" fontSize={25}>
+            {regionsGraphTitle}
+          </Typography>
+          <Typography marginTop={1} color="secondary" display="inline">
+            {regionsGraphText1}
+          </Typography>
+          <Typography color="primary" display="inline">
+            {regions[0].name}
+          </Typography>
+          <Typography color="secondary" display="inline">
+            {regionsGraphText2}
           </Typography>
         </Grid>
-        <Grid item xs={7} marginLeft={9}>
+        <Grid item xs={7} marginLeft={2}>
           <RegionsPieChart regions={regions} />
         </Grid>
       </Grid>
       <Grid container spacing={1} justifyContent="center" style={{ textAlign: "center" }}>
         <Grid item xs={12}>
-          <ResponsiveContainer width="100%" height={200}>
+          <ResponsiveContainer width="100%" height={180}>
             <LineChart
               width={500}
               height={200}
               data={articles}
               margin={{
-                top: 50
+                top: 20
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
@@ -213,8 +329,11 @@ export default function Statistics() {
           </ResponsiveContainer>
         </Grid>
         <Grid item xs={8} style={{ textAlign: "center" }}>
-          <Typography marginTop={3} marginBottom={7}>
-            {graphsText}
+          <Typography marginTop={2} color="primary" fontSize={25}>
+            {datesGraphTitle}
+          </Typography>
+          <Typography marginTop={1} marginBottom={7} color="secondary">
+            {datesGraphText}
           </Typography>
         </Grid>
       </Grid>

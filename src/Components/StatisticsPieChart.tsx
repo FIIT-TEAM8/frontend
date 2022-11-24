@@ -59,16 +59,6 @@ export default class RegionsPieChart extends PureComponent<{
 } > {
   COLORS = ["#0090A4", "#58CDBD", "#9D4993", "#36AD89"];
 
-  // regions1 = [
-  //   { name: "Great Britain", number: 20 },
-  //   { name: "Germany", number: 35 },
-  //   { name: "France", number: 12 },
-  //   { name: "Italy", number: 28 },
-  //   { name: "Hungary", number: 15 },
-  //   { name: "Poland", number: 45 },
-  //   { name: "Czech Republic", number: 10 },
-  // ];
-
   constructor(props: any) {
     super(props);
 
