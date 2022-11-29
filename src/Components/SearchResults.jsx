@@ -4,9 +4,11 @@ import {
   Box,
   Typography,
   CircularProgress,
+  Grid,
+  Button
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { apiCall } from "../Utils/APIConnector";
 import ResultItem from "./ResultItem";
 
@@ -17,6 +19,7 @@ export default function SearchResults() {
   const [totalResults, setTotalResults] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [lastSearched, setLastSearched] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsLoaded(false);
@@ -46,37 +49,74 @@ export default function SearchResults() {
     setSearchParams(searchParams);
   };
 
+  const showArticlesResults = () => {
+    navigate(`/stats?${searchParams.toString()}`);
+  };
+
   if (isLoaded) {
     return (
-      <Stack sx={{ pt: 2 }}>
-        {totalResults === 1 ? (
-          <Typography color="secondary">
-            {totalResults}
-            {" "}
-            result found.
-          </Typography>
-        ) : (
-          <Typography color="secondary">
-            {totalResults}
-            {" "}
-            results found.
-          </Typography>
-        )}
-        <Stack spacing={6} sx={{ pt: 4 }}>
-          {actResults.map((result) => (
-            <ResultItem item={result} key={result.title} />
-          ))}
-        </Stack>
-        <Box my={2} display="flex" justifyContent="center">
-          {totalPages > 1 && (
+      <div>
+        <Grid item container justifyContent="center" spacing={0} marginTop={3} marginBottom={3} columns={16}>
+          <Grid item xs="auto">
+            <Button
+              size="large"
+              color="secondary"
+              variant="text"
+              onClick={showArticlesResults}
+              sx={{
+                width: "28vw"
+              }}
+            >
+              statistics
+            </Button>
+          </Grid>
+
+          <Grid item xs="auto">
+            <Button
+              size="large"
+              color="primary"
+              variant="text"
+              sx={{
+                borderRight: "1px solid",
+                borderRadius: "0",
+                width: "28vw"
+              }}
+              style={{ backgroundColor: "rgb(240, 251, 250)" }}
+            >
+              articles
+            </Button>
+          </Grid>
+        </Grid>
+        <Stack sx={{ pt: 2 }}>
+          {totalResults === 1 ? (
+            <Typography color="secondary">
+              {totalResults}
+              {" "}
+              result found.
+            </Typography>
+          ) : (
+            <Typography color="secondary">
+              {totalResults}
+              {" "}
+              results found.
+            </Typography>
+          )}
+          <Stack spacing={6} sx={{ pt: 4 }}>
+            {actResults.map((result) => (
+              <ResultItem item={result} key={result.title} />
+            ))}
+          </Stack>
+          <Box my={2} display="flex" justifyContent="center">
+            {totalPages > 1 && (
             <Pagination
               count={totalPages}
               page={parseInt(searchParams.get("page"), 10)}
               onChange={handlePageChange}
             />
-          )}
-        </Box>
-      </Stack>
+            )}
+          </Box>
+        </Stack>
+      </div>
     );
   }
   return (

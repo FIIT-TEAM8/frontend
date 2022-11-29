@@ -14,6 +14,77 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { apiCall } from "../Utils/APIConnector";
 import RegionsPieChart from "./StatisticsPieChart";
 
+interface GraphData {
+  name: string;
+  value: number;
+}
+function generateGraphData(name: string, value: number): GraphData {
+  return { name, value };
+}
+function getGraphData(dataNames: string[], dataValues: number[], sort: boolean): GraphData[] {
+  let result: GraphData[] = [];
+
+  for (let i = 0; i < dataNames.length; i += 1) {
+    result.push(generateGraphData(dataNames[i], dataValues[i]));
+  }
+
+  if (sort) {
+    const sortedData = result.slice().sort((a, b) => b.value - a.value);
+    result = sortedData.slice(0, 7);
+  }
+
+  return result;
+}
+
+interface DatesGraphData {
+  month: string;
+  value: string;
+}
+
+function generateDatesGraphData(month: string, value: string): DatesGraphData {
+  return { month, value };
+}
+function getDatesGraphData(dataNames: string[], dataValues: string[]): DatesGraphData[] {
+  const result: DatesGraphData[] = [];
+
+  for (let i = 0; i < dataNames.length; i += 1) {
+    result.push(generateDatesGraphData(dataNames[i], dataValues[i]));
+  }
+
+  return result;
+}
+
+// const articlesByDate = {
+//   "635e844cc4e72770f007fb6d": "2022-08-29",
+//   "635e844cc4e72770f007fb6g": "2022-10-29",
+//   "635e844cc4e72770f007fb6e": "2022-12-29",
+//   "635e844cc4e72770f007fb6i": "2022-06-29",
+//   "635e844cc4e72770f007fb6o": "2022-06-29",
+//   "635e844cc4e72770f007fb6p": "2022-06-29",
+//   "635e844cc4e72770f007fb6n": "2022-05-29",
+//   "635e844cc4e72770f007fb6m": "2022-08-29",
+//   "635e7d5b452c173db5b3b3e3": "2022-09-28",
+//   "635e837ec4e72770f007fa75": "2022-09-30",
+//   "635e8430c4e72770f007fb4f": "2022-10-05",
+//   "635e8438c4e72770f007fb57": "2022-10-10",
+//   "635e843ec4e72770f007fb5b": "2022-10-14",
+//   "635e843fc4e72770f007fb5f": "2022-10-15",
+//   "635e844cc4e72770f007fb6x": "2022-10-29",
+//   "635e844cc4e72770f007fb67": "2022-12-29",
+//   "635e844cc4e72770f007fb65s": "2022-01-29",
+//   "635e844cc4e72770f007fb659": "2022-02-29",
+//   "635e844cc4e72770f007fb656": "2022-03-29",
+//   "635e844cc4e72770f007fb653": "2022-04-29",
+//   "635e844cc4e72770f007fb652": "2022-05-29",
+//   "635e844cc4e72770f007fb6": "2022-06-29",
+//   "635e844cc4e72770f007b6": "2022-07-29",
+//   "635e844cc4e72770f007f": "2022-08-29",
+//   "635e844cc4e72770f0fb65s": "2022-12-29",
+//   "635e844cc4e727707fb65s": "2022-12-29",
+//   "635e844cc4e70f007fb65s": "2022-12-29",
+//   "635e8910c01f7cf4d86ce": "2022-11-20"
+// };
+
 type regionsType = {
   [key: string]: string
 }
@@ -58,33 +129,27 @@ export default function Statistics() {
   const [isLoaded, setIsLoaded] = useState(false);
   // const [lastSearched, setLastSearched] = useState("null");
   // const [articles, setArticles] = useState(0 as any);
-  const [statsData, setStatsData] = useState({} as any);
+  const [statsData, setStatsData] = useState([{
+    statsarticlesCount: 0,
+    statsQuery: "",
+    searchFrom: "",
+    searchTo: "",
+    stats: {
+      articles_by_crime: {},
+      articles_by_region: {},
+      articles_by_date: {}
+    },
+    statsTotalResults: 0,
+    status: 0,
+    ok: false
+  }]);
   const [topCrimes, setTopCrimes] = useState({} as any);
   const [regions, setRegions] = useState([] as any);
+  const [articlesDates, setArticlesDates] = useState([] as any);
   const [totalResults, setTotalResuls] = useState(0);
   const [articlesCount, setArticlesCount] = useState(0);
   const [query, setQuery] = useState("" as any);
   const navigate = useNavigate();
-
-  interface GraphData {
-    name: string;
-    value: number;
-  }
-  function generateGraphData(name: string, value: number): GraphData {
-    return { name, value };
-  }
-  function getGraphData(dataNames: string[], dataValues: number[]): GraphData[] {
-    let result: GraphData[] = [];
-
-    for (let i = 0; i < dataNames.length; i += 1) {
-      result.push(generateGraphData(dataNames[i], dataValues[i]));
-    }
-
-    const sortedData = result.slice().sort((a, b) => b.value - a.value);
-    result = sortedData.slice(0, 7);
-
-    return result;
-  }
 
   interface StatsData {
     statsarticlesCount: number;
@@ -149,15 +214,31 @@ export default function Statistics() {
           Object.keys(result).forEach((k) => reslutKeys.push(k));
           Object.values(result).forEach((val) => resultValues.push(val));
 
-          setStatsData(getStatsData(resultValues));
+          setStatsData(getStatsData(resultValues) as []);
+          // setStatsData([{
+          //   statsarticlesCount: 25,
+          //   statsQuery: "",
+          //   searchFrom: "",
+          //   searchTo: "",
+          //   stats: {
+          //     articles_by_crime: {},
+          //     articles_by_region: {},
+          //     articles_by_date: {}
+          //   },
+          //   statsTotalResults: 20,
+          //   status: 0,
+          //   ok: true
+          // }]);
+          setTotalResuls(20);
+          setArticlesCount(statsData[0].statsarticlesCount);
+          console.log(totalResults);
           setIsLoaded(true);
         }
       }
     );
 
-    console.log(statsData[0].statsarticlesCount);
-    setTotalResuls(statsData[0].statsTotalResults);
-    setArticlesCount(statsData[0].statsarticlesCount);
+    setTotalResuls(20);
+    console.log(totalResults);
 
     // getting top crimes
     const crimeKeys: string[] = [];
@@ -177,21 +258,48 @@ export default function Statistics() {
       (n: any) => regionsNumbers.push(n.length)
     );
 
+    const articlesIDs: string[] = [];
+    Object.keys(statsData[0].stats.articles_by_date).forEach((k) => articlesIDs.push(k));
+
+    const articlesDatesMonths: string[] = [];
+    Object.values(statsData[0].stats.articles_by_date).forEach(
+      (n: any) => articlesDatesMonths.push(n)
+    );
+
+    const datesData = getDatesGraphData(articlesDatesMonths, articlesIDs);
+
+    const objectWithGroupByDate = {} as any;
+
+    for (let i = 0; i < datesData.length; i += 1) {
+      let { month: months } = datesData[i];
+      months = months.slice(0, 4);
+      if (!objectWithGroupByDate[months]) {
+        objectWithGroupByDate[months] = [];
+      }
+      objectWithGroupByDate[months].push(datesData[i]);
+    }
+
+    const articlesMonths: string[] = [];
+    Object.keys(objectWithGroupByDate).forEach((k) => articlesMonths.push(k));
+
+    const articlesMonthsValues: number[] = [];
+    Object.values(objectWithGroupByDate).forEach(
+      (n: any) => articlesMonthsValues.push(n.length)
+    );
+
+    const artDates = (getGraphData(articlesMonths, articlesMonthsValues, false));
+    artDates.sort((a, b) => {
+      const x = a.name < b.name ? -1 : 1;
+      return x;
+    });
+
     const regionNames = mapRegions(regionsKeys);
 
-    setTopCrimes(getGraphData(crimeKeys, crimeNumbers));
-    setRegions(getGraphData(regionNames, regionsNumbers));
+    setTopCrimes(getGraphData(crimeKeys, crimeNumbers, true));
+    setRegions(getGraphData(regionNames, regionsNumbers, true));
+    setArticlesDates(artDates);
   }, [searchParams]);
 
-  const articles = [
-    { year: "2016", articles: 20 },
-    { year: "2017", articles: 35 },
-    { year: "2018", articles: 12 },
-    { year: "2019", articles: 28 },
-    { year: "2020", articles: 15 },
-    { year: "2021", articles: 45 },
-    { year: "2022", articles: 67 },
-  ];
   // const languages = [
   //   { language: "english", number: 20 },
   //   { language: "italian", number: 35 },
@@ -215,10 +323,10 @@ export default function Statistics() {
   const datesGraphTitle = "articles in time";
 
   const topCrimesGraphText1 = `We found the top 7 crimes ${query} was linked to. This person is most associated with the crime of `;
-  const topCrimesGraphText2 = `. We found exactly ${topCrimes[0].value} articles related to this crime and ${query}.`;
+  const topCrimesGraphText2 = `. We found exactly ${topCrimes[0]?.value} articles related to this crime and ${query}.`;
   const regionsGraphText1 = `Most articles about ${query} were published in `;
-  const regionsGraphText2 = `. More specifically, we found ${regions[0].value} articles about the searched person, that were published in this country.`;
-  const datesGraphText = `On the line graph above we can see how articles about ${query} were published during the given time period. From this graph, we can see that most articles about the searched person were published in ${articles[0].year}.`;
+  const regionsGraphText2 = `. More specifically, we found ${regions[0]?.value} articles about the searched person, that were published in this country.`;
+  const datesGraphText = `On the line graph above we can see how articles about ${query} were published during the given time period. From this graph, we can see that most articles about the searched person were published in 2020.`;
 
   if (isLoaded) {
     return (
@@ -338,7 +446,7 @@ export default function Statistics() {
               {topCrimesGraphText1}
             </Typography>
             <Typography color="primary" display="inline">
-              {topCrimes[0].name.toLowerCase()}
+              {topCrimes[0]?.name.toLowerCase()}
             </Typography>
             <Typography color="secondary" display="inline">
               {topCrimesGraphText2}
@@ -354,7 +462,7 @@ export default function Statistics() {
               {regionsGraphText1}
             </Typography>
             <Typography color="primary" display="inline">
-              {regions[0].name}
+              {regions[0]?.name}
             </Typography>
             <Typography color="secondary" display="inline">
               {regionsGraphText2}
@@ -370,16 +478,16 @@ export default function Statistics() {
               <LineChart
                 width={500}
                 height={200}
-                data={articles}
+                data={articlesDates}
                 margin={{
                   top: 20
                 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="year" />
+                <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Line connectNulls type="monotone" dataKey="articles" stroke="#9D4993" fill="#9D4993" />
+                <Line connectNulls type="monotone" dataKey="value" stroke="#9D4993" fill="#9D4993" />
               </LineChart>
             </ResponsiveContainer>
           </Grid>
@@ -398,15 +506,65 @@ export default function Statistics() {
 
   return (
     <div>
-      {totalResults === 0 ? (
-        <div style={{ paddingTop: "2" }} />
-      ) : (
-        <Typography pt={2} color="secondary">
-          {totalResults}
-          {" "}
-          results found.
-        </Typography>
-      )}
+      <Grid item container justifyContent="center" spacing={0} marginTop={3} marginBottom={3} columns={16}>
+        <Grid item xs="auto">
+          <Button
+            size="large"
+            color="primary"
+            variant="text"
+            sx={{
+              borderRight: "1px solid",
+              borderRadius: "0",
+              width: "28vw"
+            }}
+            style={{ backgroundColor: "rgb(240, 251, 250)" }}
+          >
+            statistics
+          </Button>
+        </Grid>
+
+        <Grid item xs="auto">
+          <Button
+            size="large"
+            color="secondary"
+            variant="text"
+            onClick={showSearchResults}
+            sx={{
+              width: "28vw"
+            }}
+          >
+            articles
+          </Button>
+        </Grid>
+      </Grid>
+      <Grid item container justifyContent="center" spacing={1}>
+        <Grid item>
+          <Typography
+            sx={{
+              marginTop: 2,
+              marginBottom: 2,
+              fontSize: 30,
+              fontWeight: 500
+            }}
+            color="primary"
+          >
+            {statsText}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography
+            sx={{
+              marginTop: 2,
+              marginBottom: 2,
+              fontSize: 30,
+              fontWeight: 500
+            }}
+            color="secondary"
+          >
+            {query}
+          </Typography>
+        </Grid>
+      </Grid>
       <Stack spacing={1} sx={{ pt: 2 }} alignItems="center">
         <CircularProgress size={50} thickness={2} color="secondary" />
       </Stack>
