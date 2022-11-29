@@ -54,37 +54,6 @@ function getDatesGraphData(dataNames: string[], dataValues: string[]): DatesGrap
   return result;
 }
 
-// const articlesByDate = {
-//   "635e844cc4e72770f007fb6d": "2022-08-29",
-//   "635e844cc4e72770f007fb6g": "2022-10-29",
-//   "635e844cc4e72770f007fb6e": "2022-12-29",
-//   "635e844cc4e72770f007fb6i": "2022-06-29",
-//   "635e844cc4e72770f007fb6o": "2022-06-29",
-//   "635e844cc4e72770f007fb6p": "2022-06-29",
-//   "635e844cc4e72770f007fb6n": "2022-05-29",
-//   "635e844cc4e72770f007fb6m": "2022-08-29",
-//   "635e7d5b452c173db5b3b3e3": "2022-09-28",
-//   "635e837ec4e72770f007fa75": "2022-09-30",
-//   "635e8430c4e72770f007fb4f": "2022-10-05",
-//   "635e8438c4e72770f007fb57": "2022-10-10",
-//   "635e843ec4e72770f007fb5b": "2022-10-14",
-//   "635e843fc4e72770f007fb5f": "2022-10-15",
-//   "635e844cc4e72770f007fb6x": "2022-10-29",
-//   "635e844cc4e72770f007fb67": "2022-12-29",
-//   "635e844cc4e72770f007fb65s": "2022-01-29",
-//   "635e844cc4e72770f007fb659": "2022-02-29",
-//   "635e844cc4e72770f007fb656": "2022-03-29",
-//   "635e844cc4e72770f007fb653": "2022-04-29",
-//   "635e844cc4e72770f007fb652": "2022-05-29",
-//   "635e844cc4e72770f007fb6": "2022-06-29",
-//   "635e844cc4e72770f007b6": "2022-07-29",
-//   "635e844cc4e72770f007f": "2022-08-29",
-//   "635e844cc4e72770f0fb65s": "2022-12-29",
-//   "635e844cc4e727707fb65s": "2022-12-29",
-//   "635e844cc4e70f007fb65s": "2022-12-29",
-//   "635e8910c01f7cf4d86ce": "2022-11-20"
-// };
-
 type regionsType = {
   [key: string]: string
 }
@@ -129,50 +98,52 @@ export default function Statistics() {
   const [isLoaded, setIsLoaded] = useState(false);
   // const [lastSearched, setLastSearched] = useState("null");
   // const [articles, setArticles] = useState(0 as any);
-  const [statsData, setStatsData] = useState([{
-    statsarticlesCount: 0,
-    statsQuery: "",
-    searchFrom: "",
-    searchTo: "",
-    stats: {
-      articles_by_crime: {},
-      articles_by_region: {},
-      articles_by_date: {}
-    },
-    statsTotalResults: 0,
-    status: 0,
-    ok: false
-  }]);
+  // const [statsData, setStatsData] = useState([{
+  //   statsarticlesCount: 0,
+  //   statsQuery: "",
+  //   searchFrom: "",
+  //   searchTo: "",
+  //   stats: {
+  //     articles_by_crime: {},
+  //     articles_by_region: {},
+  //     articles_by_date: {}
+  //   },
+  //   statsTotalResults: 0,
+  //   status: 0,
+  //   ok: false
+  // }]);
+  // const [statsData, setStatsData] = useState({} as any);
   const [topCrimes, setTopCrimes] = useState({} as any);
   const [regions, setRegions] = useState([] as any);
   const [articlesDates, setArticlesDates] = useState([] as any);
+  const [mostArticlesYear, setMostArticlesYear] = useState("");
   const [totalResults, setTotalResuls] = useState(0);
   const [articlesCount, setArticlesCount] = useState(0);
   const [query, setQuery] = useState("" as any);
   const navigate = useNavigate();
 
   interface StatsData {
-    statsarticlesCount: number;
+    statsArticlesCount: number;
     statsQuery: string;
     searchFrom: string;
     searchTo: string;
-    stats: {};
+    stats: any;
     statsTotalResults: number;
     status: number;
     ok: boolean;
   }
   function generateStatsData(
-    statsarticlesCount: number,
+    statsArticlesCount: number,
     statsQuery: string,
     searchFrom: string,
     searchTo: string,
-    stats: {},
+    stats: any,
     statsTotalResults: number,
     status: number,
     ok: boolean
   ): StatsData {
     return {
-      statsarticlesCount, statsQuery, searchFrom, searchTo, stats, statsTotalResults, status, ok
+      statsArticlesCount, statsQuery, searchFrom, searchTo, stats, statsTotalResults, status, ok
     };
   }
   function getStatsData(resultValues: string[]): StatsData[] {
@@ -209,95 +180,80 @@ export default function Statistics() {
     ).then(
       (result) => {
         if (result.ok) {
-          const reslutKeys: string[] = [];
           const resultValues: string[] = [];
-          Object.keys(result).forEach((k) => reslutKeys.push(k));
           Object.values(result).forEach((val) => resultValues.push(val));
 
-          setStatsData(getStatsData(resultValues) as []);
-          // setStatsData([{
-          //   statsarticlesCount: 25,
-          //   statsQuery: "",
-          //   searchFrom: "",
-          //   searchTo: "",
-          //   stats: {
-          //     articles_by_crime: {},
-          //     articles_by_region: {},
-          //     articles_by_date: {}
-          //   },
-          //   statsTotalResults: 20,
-          //   status: 0,
-          //   ok: true
-          // }]);
-          setTotalResuls(20);
-          setArticlesCount(statsData[0].statsarticlesCount);
-          console.log(totalResults);
+          const myData = getStatsData(resultValues);
+
+          setTotalResuls(myData[0].statsTotalResults);
+          setArticlesCount(myData[0].statsArticlesCount);
           setIsLoaded(true);
+
+          // getting top crimes
+          const crimeKeys: string[] = [];
+          Object.keys(myData[0].stats.articles_by_crime).forEach((k) => crimeKeys.push(k));
+
+          const crimeNumbers: number[] = [];
+          Object.values(myData[0].stats.articles_by_crime).forEach(
+            (n: any) => crimeNumbers.push(n.length)
+          );
+
+          // getting regions
+          const regionsKeys: string[] = [];
+          Object.keys(myData[0].stats.articles_by_region).forEach((k) => regionsKeys.push(k));
+
+          const regionsNumbers: number[] = [];
+          Object.values(myData[0].stats.articles_by_region).forEach(
+            (n: any) => regionsNumbers.push(n.length)
+          );
+
+          const articlesIDs: string[] = [];
+          Object.keys(myData[0].stats.articles_by_date).forEach((k) => articlesIDs.push(k));
+
+          const articlesDatesMonths: string[] = [];
+          Object.values(myData[0].stats.articles_by_date).forEach(
+            (n: any) => articlesDatesMonths.push(n)
+          );
+
+          const datesData = getDatesGraphData(articlesDatesMonths, articlesIDs);
+
+          const objectWithGroupByDate = {} as any;
+
+          for (let i = 0; i < datesData.length; i += 1) {
+            let { month: months } = datesData[i];
+            months = months.slice(0, 4);
+            if (!objectWithGroupByDate[months]) {
+              objectWithGroupByDate[months] = [];
+            }
+            objectWithGroupByDate[months].push(datesData[i]);
+          }
+
+          const articlesMonths: string[] = [];
+          Object.keys(objectWithGroupByDate).forEach((k) => articlesMonths.push(k));
+
+          const articlesMonthsValues: number[] = [];
+          Object.values(objectWithGroupByDate).forEach(
+            (n: any) => articlesMonthsValues.push(n.length)
+          );
+
+          const artDates = (getGraphData(articlesMonths, articlesMonthsValues, false));
+          artDates.sort((a, b) => {
+            const x = a.name < b.name ? -1 : 1;
+            return x;
+          });
+
+          const artDatesValues = (getGraphData(articlesMonths, articlesMonthsValues, false));
+          artDatesValues.sort((a, b) => b.value - a.value);
+          setMostArticlesYear(artDatesValues[0].name);
+
+          const regionNames = mapRegions(regionsKeys);
+
+          setTopCrimes(getGraphData(crimeKeys, crimeNumbers, true));
+          setRegions(getGraphData(regionNames, regionsNumbers, true));
+          setArticlesDates(artDates);
         }
       }
     );
-
-    setTotalResuls(20);
-    console.log(totalResults);
-
-    // getting top crimes
-    const crimeKeys: string[] = [];
-    Object.keys(statsData[0].stats.articles_by_crime).forEach((k) => crimeKeys.push(k));
-
-    const crimeNumbers: number[] = [];
-    Object.values(statsData[0].stats.articles_by_crime).forEach(
-      (n: any) => crimeNumbers.push(n.length)
-    );
-
-    // getting regions
-    const regionsKeys: string[] = [];
-    Object.keys(statsData[0].stats.articles_by_region).forEach((k) => regionsKeys.push(k));
-
-    const regionsNumbers: number[] = [];
-    Object.values(statsData[0].stats.articles_by_region).forEach(
-      (n: any) => regionsNumbers.push(n.length)
-    );
-
-    const articlesIDs: string[] = [];
-    Object.keys(statsData[0].stats.articles_by_date).forEach((k) => articlesIDs.push(k));
-
-    const articlesDatesMonths: string[] = [];
-    Object.values(statsData[0].stats.articles_by_date).forEach(
-      (n: any) => articlesDatesMonths.push(n)
-    );
-
-    const datesData = getDatesGraphData(articlesDatesMonths, articlesIDs);
-
-    const objectWithGroupByDate = {} as any;
-
-    for (let i = 0; i < datesData.length; i += 1) {
-      let { month: months } = datesData[i];
-      months = months.slice(0, 4);
-      if (!objectWithGroupByDate[months]) {
-        objectWithGroupByDate[months] = [];
-      }
-      objectWithGroupByDate[months].push(datesData[i]);
-    }
-
-    const articlesMonths: string[] = [];
-    Object.keys(objectWithGroupByDate).forEach((k) => articlesMonths.push(k));
-
-    const articlesMonthsValues: number[] = [];
-    Object.values(objectWithGroupByDate).forEach(
-      (n: any) => articlesMonthsValues.push(n.length)
-    );
-
-    const artDates = (getGraphData(articlesMonths, articlesMonthsValues, false));
-    artDates.sort((a, b) => {
-      const x = a.name < b.name ? -1 : 1;
-      return x;
-    });
-
-    const regionNames = mapRegions(regionsKeys);
-
-    setTopCrimes(getGraphData(crimeKeys, crimeNumbers, true));
-    setRegions(getGraphData(regionNames, regionsNumbers, true));
-    setArticlesDates(artDates);
   }, [searchParams]);
 
   // const languages = [
@@ -326,7 +282,7 @@ export default function Statistics() {
   const topCrimesGraphText2 = `. We found exactly ${topCrimes[0]?.value} articles related to this crime and ${query}.`;
   const regionsGraphText1 = `Most articles about ${query} were published in `;
   const regionsGraphText2 = `. More specifically, we found ${regions[0]?.value} articles about the searched person, that were published in this country.`;
-  const datesGraphText = `On the line graph above we can see how articles about ${query} were published during the given time period. From this graph, we can see that most articles about the searched person were published in 2020.`;
+  const datesGraphText = `On the line graph above we can see how articles about ${query} were published during the given time period. From this graph, we can see that most articles about the searched person were published in ${mostArticlesYear}.`;
 
   if (isLoaded) {
     return (
