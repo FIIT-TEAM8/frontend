@@ -155,8 +155,8 @@ export default function Statistics() {
 
     setQuery(searchParams.get("q"));
     apiCall(
-      window._env_.REACT_APP_STATS_SERVER,
-      `stats/api/search?${searchParams.toString()}`,
+      "https://adversea.com",
+      `/stats/api/search?${searchParams.toString()}`,
       "GET"
     ).then(
       (result) => {
