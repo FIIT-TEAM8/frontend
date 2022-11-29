@@ -140,7 +140,9 @@ export default function AboutPage() {
             </Grid>
             <Grid item>
               <Typography color="secondary" fontSize="1rem">
-                direct access to articles is provided by API. if you would like to use our API for your project, contact us for further information.
+                direct access to articles is provided by API.
+                if you would like to use our API for your project,
+                contact us for further information.
               </Typography>
             </Grid>
           </Grid>
