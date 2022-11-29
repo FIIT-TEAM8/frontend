@@ -94,25 +94,7 @@ function mapRegions(regionsKeys: string[]): any {
 
 export default function Statistics() {
   const [searchParams] = useSearchParams();
-  // const [actResults, setActResults] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  // const [lastSearched, setLastSearched] = useState("null");
-  // const [articles, setArticles] = useState(0 as any);
-  // const [statsData, setStatsData] = useState([{
-  //   statsarticlesCount: 0,
-  //   statsQuery: "",
-  //   searchFrom: "",
-  //   searchTo: "",
-  //   stats: {
-  //     articles_by_crime: {},
-  //     articles_by_region: {},
-  //     articles_by_date: {}
-  //   },
-  //   statsTotalResults: 0,
-  //   status: 0,
-  //   ok: false
-  // }]);
-  // const [statsData, setStatsData] = useState({} as any);
   const [topCrimes, setTopCrimes] = useState({} as any);
   const [regions, setRegions] = useState([] as any);
   const [articlesDates, setArticlesDates] = useState([] as any);
@@ -207,6 +189,7 @@ export default function Statistics() {
             (n: any) => regionsNumbers.push(n.length)
           );
 
+          // getting articles by date
           const articlesIDs: string[] = [];
           Object.keys(myData[0].stats.articles_by_date).forEach((k) => articlesIDs.push(k));
 
@@ -219,9 +202,10 @@ export default function Statistics() {
 
           const objectWithGroupByDate = {} as any;
 
+          // generating JSON from articles_by_date response data
           for (let i = 0; i < datesData.length; i += 1) {
             let { month: months } = datesData[i];
-            months = months.slice(0, 4);
+            months = months.slice(0, 7);
             if (!objectWithGroupByDate[months]) {
               objectWithGroupByDate[months] = [];
             }
@@ -236,12 +220,14 @@ export default function Statistics() {
             (n: any) => articlesMonthsValues.push(n.length)
           );
 
+          // sort dates by months
           const artDates = (getGraphData(articlesMonths, articlesMonthsValues, false));
           artDates.sort((a, b) => {
             const x = a.name < b.name ? -1 : 1;
             return x;
           });
 
+          // sort dates by number of articles
           const artDatesValues = (getGraphData(articlesMonths, articlesMonthsValues, false));
           artDatesValues.sort((a, b) => b.value - a.value);
           setMostArticlesYear(artDatesValues[0].name);
@@ -282,7 +268,7 @@ export default function Statistics() {
   const topCrimesGraphText2 = `. We found exactly ${topCrimes[0]?.value} articles related to this crime and ${query}.`;
   const regionsGraphText1 = `Most articles about ${query} were published in `;
   const regionsGraphText2 = `. More specifically, we found ${regions[0]?.value} articles about the searched person, that were published in this country.`;
-  const datesGraphText = `On the line graph above we can see how articles about ${query} were published during the given time period. From this graph, we can see that most articles about the searched person were published in ${mostArticlesYear}.`;
+  const datesGraphText = `On the line graph above we can see how articles about ${query} were published during the given time period. From this graph, we can see that most articles about the searched person were published in `;
 
   if (isLoaded) {
     return (
@@ -443,16 +429,23 @@ export default function Statistics() {
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Line connectNulls type="monotone" dataKey="value" stroke="#9D4993" fill="#9D4993" />
+                <Legend />
+                <Line connectNulls type="monotone" dataKey="value" name="number of articles published in a given month" stroke="#9D4993" fill="#9D4993" />
               </LineChart>
             </ResponsiveContainer>
           </Grid>
-          <Grid item xs={8} style={{ textAlign: "center" }}>
+          <Grid item xs={8} style={{ textAlign: "center" }} marginBottom={10}>
             <Typography marginTop={2} color="primary" fontSize={25}>
               {datesGraphTitle}
             </Typography>
-            <Typography marginTop={1} marginBottom={7} color="secondary">
+            <Typography marginTop={1} color="secondary" display="inline">
               {datesGraphText}
+            </Typography>
+            <Typography color="primary" display="inline">
+              {mostArticlesYear.slice(0, 4)}
+            </Typography>
+            <Typography color="secondary" display="inline">
+              .
             </Typography>
           </Grid>
         </Grid>
