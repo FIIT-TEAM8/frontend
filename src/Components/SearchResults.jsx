@@ -77,7 +77,7 @@ export default function SearchResults() {
               color="primary"
               variant="text"
               sx={{
-                borderRight: "1px solid",
+                borderLeft: "1px solid",
                 borderRadius: "0",
                 width: "28vw"
               }}
@@ -121,6 +121,37 @@ export default function SearchResults() {
   }
   return (
     <div>
+      <Grid item container justifyContent="center" spacing={0} marginTop={3} marginBottom={3} columns={16}>
+        <Grid item xs="auto">
+          <Button
+            size="large"
+            color="secondary"
+            variant="text"
+            onClick={showArticlesResults}
+            sx={{
+              width: "28vw"
+            }}
+          >
+            statistics
+          </Button>
+        </Grid>
+
+        <Grid item xs="auto">
+          <Button
+            size="large"
+            color="primary"
+            variant="text"
+            sx={{
+              borderLeft: "1px solid",
+              borderRadius: "0",
+              width: "28vw"
+            }}
+            style={{ backgroundColor: "rgb(240, 251, 250)" }}
+          >
+            articles
+          </Button>
+        </Grid>
+      </Grid>
       {totalResults === 0 ? (
         <div style={{ paddingTop: "2" }} />
       ) : (

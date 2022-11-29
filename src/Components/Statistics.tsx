@@ -156,6 +156,7 @@ export default function Statistics() {
     setQuery(searchParams.get("q"));
     apiCall(
       "https://adversea.com",
+      // "http://localhost:8010/proxy/",
       `/stats/api/search?${searchParams.toString()}`,
       "GET"
     ).then(
