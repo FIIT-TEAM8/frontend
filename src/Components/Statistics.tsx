@@ -154,9 +154,8 @@ export default function Statistics() {
     // }
 
     setQuery(searchParams.get("q"));
-
     apiCall(
-      "http://localhost:8010/proxy/",
+      window._env_.REACT_APP_STATS_SERVER,
       `stats/api/search?${searchParams.toString()}`,
       "GET"
     ).then(
