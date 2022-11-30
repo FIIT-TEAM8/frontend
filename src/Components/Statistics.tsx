@@ -376,7 +376,7 @@ export default function Statistics() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="value" name="number of crimes" fill="#7163B4" />
+                <Bar dataKey="value" name="number of found articles" fill="#7163B4" />
               </BarChart>
             </ResponsiveContainer>
           </Grid>
@@ -430,7 +430,7 @@ export default function Statistics() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line connectNulls type="monotone" dataKey="value" name="number of articles published in a given month" stroke="#9D4993" fill="#9D4993" />
+                <Line connectNulls type="monotone" dataKey="value" name="number of found articles" stroke="#9D4993" fill="#9D4993" />
               </LineChart>
             </ResponsiveContainer>
           </Grid>
