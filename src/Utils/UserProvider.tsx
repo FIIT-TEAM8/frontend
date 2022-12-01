@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { apiCall, getCookieToken, refreshToken } from "./APIConnector";
-import { ArticleInReport, APIResponse, User } from "./Interfaces";
+import { ArticleInReport, APIResponse, User } from "../types/Interfaces";
 import { UserContext } from "./UserContext";
 
 interface Props {

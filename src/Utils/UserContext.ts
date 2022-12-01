@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { User } from "./Interfaces";
+import { User } from "../types/Interfaces";
 
 // Terrible... require FIX
 const initialUserState: User = {

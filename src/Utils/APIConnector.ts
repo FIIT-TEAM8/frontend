@@ -1,7 +1,7 @@
 // @ts-nocheck
 // Example POST method implementation:
 import Cookies from "js-cookie";
-import { APIResponse } from "./Interfaces";
+import { APIResponse } from "../types/Interfaces";
 
 const DEV: boolean = process.env.NODE_ENV !== "production";
 
