@@ -48,10 +48,10 @@ export default function UserProvider({ children }: Props) {
     // @ts-ignore: Property '_env_' does not exist on type 'Window & typeof globalThis'.
     await apiCall(window._env_.REACT_APP_NODE_SERVER_URL, `/api/report/${loginRefToken.id}?status=In Progress`, "GET")
       .then((result: APIResponse) => {
-        if (result.ok) {
+        if (result.ok && result.data) {
           console.log("PDF report was succesfully loaded.");
-          setReportId(result.reportId);
-          setArticlesInReport(result.articlesInReport);
+          setReportId(result.data.reportId);
+          setArticlesInReport(result.data.articlesInReport);
         } else {
           console.log("Unable to load PDF report");
         }
@@ -131,8 +131,8 @@ export default function UserProvider({ children }: Props) {
         articlesInReport: newArticlesInReport,
       })
         .then((result: APIResponse) => {
-          if (result.ok) {
-            setReportId(result.reportId);
+          if (result.ok && result.data) {
+            setReportId(result.data.reportId);
             console.log("Report successfully initialized");
           } else {
             console.log(

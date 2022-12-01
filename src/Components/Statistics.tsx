@@ -158,9 +158,9 @@ export default function Statistics() {
       "GET"
     ).then(
       (result) => {
-        if (result.ok) {
+        if (result.ok && result.data) {
           const resultValues: string[] = [];
-          Object.values(result).forEach((val) => resultValues.push(val));
+          Object.values(result.data).forEach((val) => resultValues.push(val));
 
           const myData = getStatsData(resultValues);
 

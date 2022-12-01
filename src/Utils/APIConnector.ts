@@ -90,7 +90,7 @@ export async function apiCall(
       if (contentType === "application/pdf") {
         result.blobData = response;
       } else {
-        result = await response.json();
+        result.data = await response.json();
       }
     }
   } catch (e) {
@@ -100,6 +100,7 @@ export async function apiCall(
       msg: "Something went wrong, while getting response content.",
     };
   }
+
   result.status = response.status;
   result.ok = true ? result.status === 200 : false;
   return result; // parses JSON response into native JavaScript objects

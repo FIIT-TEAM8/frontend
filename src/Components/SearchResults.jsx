@@ -33,9 +33,9 @@ export default function SearchResults() {
     apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/search?${searchParams.toString()}`, "GET").then(
       (result) => {
         if (result.ok) {
-          setActResults(result.results);
-          setTotalPages(result.total_pages);
-          setTotalResults(result.total_results);
+          setActResults(result.data.results);
+          setTotalPages(result.data.total_pages);
+          setTotalResults(result.data.total_results);
           setIsLoaded(true);
         }
       }
