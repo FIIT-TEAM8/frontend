@@ -10,7 +10,7 @@ import {
   AlertColor,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { APIResponse, Article, ArticleInReport } from "../Utils/Interfaces";
+import { APIResponse, Article, ArticleInReport } from "../types/Interfaces";
 import useWindowSize from "../Utils/Screen";
 import { useUser } from "../Utils/UserContext";
 import { apiCall } from "../Utils/APIConnector";

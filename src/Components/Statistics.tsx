@@ -18,9 +18,11 @@ interface GraphData {
   name: string;
   value: number;
 }
+
 function generateGraphData(name: string, value: number): GraphData {
   return { name, value };
 }
+
 function getGraphData(dataNames: string[], dataValues: number[], sort: boolean): GraphData[] {
   let result: GraphData[] = [];
 
@@ -44,6 +46,7 @@ interface DatesGraphData {
 function generateDatesGraphData(month: string, value: string): DatesGraphData {
   return { month, value };
 }
+
 function getDatesGraphData(dataNames: string[], dataValues: string[]): DatesGraphData[] {
   const result: DatesGraphData[] = [];
 
@@ -147,23 +150,17 @@ export default function Statistics() {
 
   useEffect(() => {
     setIsLoaded(false);
-
-    // const q = searchParams.get("q");
-    // if (q !== lastSearched) {
-    //   setLastSearched(q);
-    // }
-
     setQuery(searchParams.get("q"));
+
     apiCall(
-      "https://adversea.com",
-      // "http://localhost:8010/proxy/",
-      `/stats/api/search?${searchParams.toString()}`,
+      window._env_.REACT_APP_STATS_SERVER,
+      `/api/search?${searchParams.toString()}`,
       "GET"
     ).then(
       (result) => {
-        if (result.ok) {
+        if (result.ok && result.data) {
           const resultValues: string[] = [];
-          Object.values(result).forEach((val) => resultValues.push(val));
+          Object.values(result.data).forEach((val) => resultValues.push(val));
 
           const myData = getStatsData(resultValues);
 

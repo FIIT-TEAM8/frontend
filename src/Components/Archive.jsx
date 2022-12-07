@@ -70,10 +70,10 @@ export function ArchivedArticle({ url = "", displayArticle = undefined }) {
       if (result.ok) {
         setTimeout(() => setLoadingProgress(100), 100);
         setIsloading(false);
-        setArticle(result.article);
+        setArticle(result.data.article);
       } else {
         setTimeout(() => setLoadingProgress(2), 500);
-        setError(result.msg);
+        setError(result.data.msg);
       }
     });
   }, [url, displayArticle]);
@@ -171,7 +171,7 @@ export default function Archive() {
   return (
     <div style={searchDivStyle}>
       <form onSubmit={onSubmit}>
-        <MainHeading text="ams archive" />
+        <MainHeading text="adversea archive" />
         <TextField
           sx={{ mt: 2 }}
           id="outlined-search"

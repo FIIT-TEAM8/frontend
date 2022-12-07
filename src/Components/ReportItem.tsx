@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { Article, ArticleInReport } from "../Utils/Interfaces";
+import { Article, ArticleInReport } from "../types/Interfaces";
 import theme from "../Style/Theme";
 
 interface Props {
