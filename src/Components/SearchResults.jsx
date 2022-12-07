@@ -64,8 +64,10 @@ export default function SearchResults() {
               variant="text"
               onClick={showArticlesResults}
               sx={{
-                width: "28vw"
+                width: "28.5vw",
+                borderRadius: "0"
               }}
+              style={{ backgroundColor: "rgb(240, 245, 247)" }}
             >
               statistics
             </Button>
@@ -74,14 +76,14 @@ export default function SearchResults() {
           <Grid item xs="auto">
             <Button
               size="large"
-              color="primary"
+              color="info"
               variant="text"
               sx={{
                 borderLeft: "1px solid",
                 borderRadius: "0",
-                width: "28vw"
+                width: "28.5vw"
               }}
-              style={{ backgroundColor: "rgb(240, 251, 250)" }}
+              style={{ backgroundColor: "rgb(38, 166, 154)" }}
             >
               articles
             </Button>
@@ -129,8 +131,10 @@ export default function SearchResults() {
             variant="text"
             onClick={showArticlesResults}
             sx={{
-              width: "28vw"
+              width: "28.5vw",
+              borderRadius: "0"
             }}
+            style={{ backgroundColor: "rgb(240, 245, 247)" }}
           >
             statistics
           </Button>
@@ -139,14 +143,14 @@ export default function SearchResults() {
         <Grid item xs="auto">
           <Button
             size="large"
-            color="primary"
+            color="info"
             variant="text"
             sx={{
               borderLeft: "1px solid",
               borderRadius: "0",
-              width: "28vw"
+              width: "28.5vw"
             }}
-            style={{ backgroundColor: "rgb(240, 251, 250)" }}
+            style={{ backgroundColor: "rgb(38, 166, 154)" }}
           >
             articles
           </Button>
