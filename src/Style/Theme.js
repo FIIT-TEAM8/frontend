@@ -13,6 +13,11 @@ const theme = createTheme({
       light: grey[100],
       dark: grey[900],
     },
+    info: {
+      main: grey[50],
+      light: grey[50],
+      dark: grey[50],
+    },
     neutral: {
       main: "#fff",
     },

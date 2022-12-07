@@ -253,6 +253,11 @@ export default function Statistics() {
     navigate(`/results?${searchParams.toString()}`);
   };
 
+  let numberOfTopCrimes;
+  if (topCrimes.length < 7) {
+    numberOfTopCrimes = topCrimes.length;
+  } else { numberOfTopCrimes = 7; }
+
   const statsText = "statistics for: ";
   const resultsText = "total articles found: ";
   const statsResultsText = `statistics generated from ${articlesCount} articles`;
@@ -261,27 +266,109 @@ export default function Statistics() {
   const regionsGraphTitle = "regions";
   const datesGraphTitle = "articles in time";
 
-  const topCrimesGraphText1 = `We found the top 7 crimes ${query} was linked to. This person is most associated with the crime of `;
+  const topCrimesGraphText1 = `We found the top ${numberOfTopCrimes} crimes ${query} was linked to. This person is most associated with the crime of `;
   const topCrimesGraphText2 = `. We found exactly ${topCrimes[0]?.value} articles related to this crime and ${query}.`;
   const regionsGraphText1 = `Most articles about ${query} were published in `;
   const regionsGraphText2 = `. More specifically, we found ${regions[0]?.value} articles about the searched person, that were published in this country.`;
   const datesGraphText = `On the line graph above we can see how articles about ${query} were published during the given time period. From this graph, we can see that most articles about the searched person were published in `;
 
   if (isLoaded) {
+    if (totalResults === 0) {
+      return (
+        <div>
+          <Grid item container justifyContent="center" spacing={0} marginTop={3} marginBottom={3} columns={16}>
+            <Grid item xs="auto">
+              <Button
+                size="large"
+                color="info"
+                variant="text"
+                sx={{
+                  borderRight: "1px solid",
+                  borderRadius: "0",
+                  width: "28.5vw"
+                }}
+                style={{ backgroundColor: "rgb(38, 166, 154)" }}
+              >
+                statistics
+              </Button>
+            </Grid>
+
+            <Grid item xs="auto">
+              <Button
+                size="large"
+                color="secondary"
+                variant="text"
+                onClick={showSearchResults}
+                sx={{
+                  width: "28.5vw",
+                  borderRadius: "0"
+                }}
+                style={{ backgroundColor: "rgb(240, 245, 247)" }}
+              >
+                articles
+              </Button>
+            </Grid>
+          </Grid>
+          <Grid item container justifyContent="center" spacing={1}>
+            <Grid item>
+              <Typography
+                sx={{
+                  marginTop: 2,
+                  marginBottom: 2,
+                  fontSize: 30,
+                  fontWeight: 500
+                }}
+                color="primary"
+              >
+                {statsText}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography
+                sx={{
+                  marginTop: 2,
+                  marginBottom: 2,
+                  fontSize: 30,
+                  fontWeight: 500
+                }}
+                color="secondary"
+              >
+                {query}
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid item container justifyContent="center" spacing={0} direction="column" style={{ textAlign: "center" }}>
+            <Grid item>
+              <Typography
+                sx={{
+                  fontSize: 15,
+                  fontWeight: 200
+                }}
+                color="secondary"
+              >
+                {resultsText}
+                {totalResults}
+              </Typography>
+            </Grid>
+          </Grid>
+        </div>
+      );
+    }
+
     return (
       <div className="main">
         <Grid item container justifyContent="center" spacing={0} marginTop={3} marginBottom={3} columns={16}>
           <Grid item xs="auto">
             <Button
               size="large"
-              color="primary"
+              color="info"
               variant="text"
               sx={{
                 borderRight: "1px solid",
                 borderRadius: "0",
-                width: "28vw"
+                width: "28.5vw"
               }}
-              style={{ backgroundColor: "rgb(240, 251, 250)" }}
+              style={{ backgroundColor: "rgb(38, 166, 154)" }}
             >
               statistics
             </Button>
@@ -294,8 +381,10 @@ export default function Statistics() {
               variant="text"
               onClick={showSearchResults}
               sx={{
-                width: "28vw"
+                width: "28.5vw",
+                borderRadius: "0"
               }}
+              style={{ backgroundColor: "rgb(240, 245, 247)" }}
             >
               articles
             </Button>
@@ -456,14 +545,14 @@ export default function Statistics() {
         <Grid item xs="auto">
           <Button
             size="large"
-            color="primary"
+            color="info"
             variant="text"
             sx={{
               borderRight: "1px solid",
               borderRadius: "0",
-              width: "28vw"
+              width: "28.5vw"
             }}
-            style={{ backgroundColor: "rgb(240, 251, 250)" }}
+            style={{ backgroundColor: "rgb(38, 166, 154)" }}
           >
             statistics
           </Button>
@@ -476,8 +565,10 @@ export default function Statistics() {
             variant="text"
             onClick={showSearchResults}
             sx={{
-              width: "28vw"
+              width: "28.5vw",
+              borderRadius: "0"
             }}
+            style={{ backgroundColor: "rgb(240, 245, 247)" }}
           >
             articles
           </Button>
