@@ -297,8 +297,8 @@ export default function Statistics() {
   const datesGraphText = `On the line graph above we can see how articles about ${query} were published during the given time period. From this graph, we can see that most articles about the searched person were published in `;
 
   const data = {
-    regions: regions,
-    searchParams: searchParams
+    regions,
+    searchParams
   };
 
   if (isLoaded) {

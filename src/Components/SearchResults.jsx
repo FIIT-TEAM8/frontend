@@ -33,9 +33,10 @@ export default function SearchResults() {
     const ids = searchParams.get("ids");
     const query = searchParams.get("q");
 
+    // if there are ids, then show results based on given ids
     if (ids) {
       searchParams.delete("q");
-      console.log("Sending request to: ", `/api/selected?${searchParams.toString()}`);
+
       apiCall(window._env_.REACT_APP_STATS_SERVER, `/api/selected?${searchParams.toString()}`, "GET").then(
         (result) => {
           if (result.ok) {
@@ -47,8 +48,6 @@ export default function SearchResults() {
         }
       );
       searchParams.append("q", query);
-      searchParams.delete("ids");
-      searchParams.delete("page");
     } else {
       apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/search?${searchParams.toString()}`, "GET").then(
         (result) => {
@@ -70,7 +69,9 @@ export default function SearchResults() {
     setSearchParams(searchParams);
   };
 
-  const showArticlesResults = () => {
+  const showStatistics = () => {
+    searchParams.delete("ids");
+    searchParams.delete("page");
     navigate(`/stats?${searchParams.toString()}`);
   };
 
@@ -83,7 +84,7 @@ export default function SearchResults() {
               size="large"
               color="secondary"
               variant="text"
-              onClick={showArticlesResults}
+              onClick={showStatistics}
               sx={{
                 width: "28.5vw",
                 borderRadius: "0"
@@ -150,7 +151,7 @@ export default function SearchResults() {
             size="large"
             color="secondary"
             variant="text"
-            onClick={showArticlesResults}
+            onClick={showStatistics}
             sx={{
               width: "28.5vw",
               borderRadius: "0"
