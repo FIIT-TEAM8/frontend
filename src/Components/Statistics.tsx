@@ -3,7 +3,9 @@ import {
   Button,
   Typography,
   Stack,
-  CircularProgress
+  CircularProgress,
+  Modal,
+  Box
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import {
@@ -111,6 +113,9 @@ export default function Statistics() {
   const [totalResults, setTotalResuls] = useState(0);
   const [articlesCount, setArticlesCount] = useState(0);
   const [query, setQuery] = useState("" as any);
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const navigate = useNavigate();
 
   interface StatsData {
@@ -272,8 +277,12 @@ export default function Statistics() {
   const showArticlesFromGraph = (e: any) => {
     searchParams.append("page", `${1}`);
     searchParams.append("ids", `[${e.articlesIDs}]`);
-    setSearchParams(searchParams);
 
+    handleOpen();
+  };
+
+  const showArticlesByIDs = () => {
+    setSearchParams(searchParams);
     navigate(`/results?${searchParams.toString()}`);
   };
 
@@ -565,6 +574,59 @@ export default function Statistics() {
             </Typography>
           </Grid>
         </Grid>
+        <Modal
+          open={open}
+          onClose={handleClose}
+        >
+          <Box sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            p: 4,
+            px: 4,
+            pb: 3,
+            textAlign: "center"
+          }}
+          >
+            <Typography sx={{ mt: 2, textAlign: "center" }}>
+              Do you want to show related articles?
+            </Typography>
+            <Grid container spacing={3} justifyContent="center" style={{ textAlign: "center" }}>
+              <Grid item>
+                <Button
+                  color="info"
+                  variant="text"
+                  style={{
+                    textAlign: "center",
+                    width: "30%",
+                    backgroundColor: "rgb(38, 166, 154)",
+                    marginBottom: "10px",
+                    marginTop: "30px"
+                  }}
+                  onClick={showArticlesByIDs}
+                >
+                  Yes
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  sx={{
+                    textAlign: "center",
+                    width: "30%",
+                    marginTop: "30px",
+                    marginBottom: "10px"
+                  }}
+                  onClick={handleClose}
+                >
+                  No
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </Modal>
       </div>
     );
   }
