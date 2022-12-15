@@ -298,7 +298,8 @@ export default function Statistics() {
 
   const data = {
     regions,
-    searchParams
+    searchParams,
+    navigate
   };
 
   if (isLoaded) {
