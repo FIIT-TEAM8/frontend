@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import {
   PieChart, Pie, Sector, ResponsiveContainer, Cell
 } from "recharts";
+// import { useSearchParams, useNavigate } from "react-router-dom";
 
 const renderActiveShape = (props: {
     cx: any; cy: any; midAngle: any; innerRadius: any; outerRadius: any; startAngle: any;
@@ -55,7 +56,8 @@ const renderActiveShape = (props: {
 };
 
 export default class RegionsPieChart extends PureComponent<{
-  regions: { name: string; number: number; }[]
+  // regions: { name: string; number: number; }[]
+  data: { regions: any; searchParams: URLSearchParams; }
 } > {
   COLORS = ["#0090A4", "#58CDBD", "#9D4993", "#36AD89"];
 
@@ -74,8 +76,21 @@ export default class RegionsPieChart extends PureComponent<{
   };
 
   override render() {
+    // const [searchParams, setSearchParams] = this.props.data.searchParams;
+    // const navigate = useNavigate();
     const { activeIndex }: any = this.state;
-    const { regions = [] } = this.props;
+    const regions = this.props.data.regions;
+    const searchParams = this.props.data.searchParams;
+
+    const showArticlesFromGraph = (e: any) => {
+      console.log(e);
+      console.log(searchParams);
+      // searchParams.append("page", `${1}`);
+      // searchParams.append("ids", `[${e.articlesIDs}]`);
+      // setSearchParams(searchParams);
+
+      // navigate(`/results?${searchParams.toString()}`);
+    };
 
     return (
       <ResponsiveContainer width="100%" height={300}>
@@ -91,6 +106,7 @@ export default class RegionsPieChart extends PureComponent<{
             fill="#8884d8"
             dataKey="value"
             onMouseEnter={this.onPieEnter}
+            onClick={showArticlesFromGraph}
           >
             {regions.map((entry: any, index: number) => (
               <Cell key={`cell-${entry}`} fill={this.COLORS[index % this.COLORS.length]} />

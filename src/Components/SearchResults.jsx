@@ -30,16 +30,37 @@ export default function SearchResults() {
       setLastSearched(q);
     }
 
-    apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/search?${searchParams.toString()}`, "GET").then(
-      (result) => {
-        if (result.ok) {
-          setActResults(result.data.results);
-          setTotalPages(result.data.total_pages);
-          setTotalResults(result.data.total_results);
-          setIsLoaded(true);
+    const ids = searchParams.get("ids");
+    const query = searchParams.get("q");
+
+    if (ids) {
+      searchParams.delete("q");
+      console.log("Sending request to: ", `/api/selected?${searchParams.toString()}`);
+      apiCall(window._env_.REACT_APP_STATS_SERVER, `/api/selected?${searchParams.toString()}`, "GET").then(
+        (result) => {
+          if (result.ok) {
+            setActResults(result.data.results);
+            setTotalPages(result.data.total_pages);
+            setTotalResults(result.data.total_results);
+            setIsLoaded(true);
+          }
         }
-      }
-    );
+      );
+      searchParams.append("q", query);
+      searchParams.delete("ids");
+      searchParams.delete("page");
+    } else {
+      apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/search?${searchParams.toString()}`, "GET").then(
+        (result) => {
+          if (result.ok) {
+            setActResults(result.data.results);
+            setTotalPages(result.data.total_pages);
+            setTotalResults(result.data.total_results);
+            setIsLoaded(true);
+          }
+        }
+      );
+    }
   }, [searchParams]);
 
   const handlePageChange = (event, value) => {
