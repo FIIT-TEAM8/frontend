@@ -3,7 +3,9 @@ import {
   Button,
   Typography,
   Stack,
-  CircularProgress
+  CircularProgress,
+  Modal,
+  Box
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import {
@@ -17,17 +19,23 @@ import RegionsPieChart from "./StatisticsPieChart";
 interface GraphData {
   name: string;
   value: number;
+  articlesIDs: string;
 }
 
-function generateGraphData(name: string, value: number): GraphData {
-  return { name, value };
+function generateGraphData(name: string, value: number, articlesIDs: string): GraphData {
+  return { name, value, articlesIDs };
 }
 
-function getGraphData(dataNames: string[], dataValues: number[], sort: boolean): GraphData[] {
+function getGraphData(
+  dataNames: string[],
+  dataValues: number[],
+  articlesIDs: string[],
+  sort: boolean
+): GraphData[] {
   let result: GraphData[] = [];
 
   for (let i = 0; i < dataNames.length; i += 1) {
-    result.push(generateGraphData(dataNames[i], dataValues[i]));
+    result.push(generateGraphData(dataNames[i], dataValues[i], articlesIDs[i]));
   }
 
   if (sort) {
@@ -96,7 +104,7 @@ function mapRegions(regionsKeys: string[]): any {
 }
 
 export default function Statistics() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isLoaded, setIsLoaded] = useState(false);
   const [topCrimes, setTopCrimes] = useState({} as any);
   const [regions, setRegions] = useState([] as any);
@@ -105,6 +113,9 @@ export default function Statistics() {
   const [totalResults, setTotalResuls] = useState(0);
   const [articlesCount, setArticlesCount] = useState(0);
   const [query, setQuery] = useState("" as any);
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const navigate = useNavigate();
 
   interface StatsData {
@@ -135,13 +146,13 @@ export default function Statistics() {
     const result: StatsData[] = [];
 
     result.push(generateStatsData(
-      +resultValues[0],
+      Number(resultValues[0]),
       resultValues[1],
       resultValues[2],
       resultValues[3],
       resultValues[4],
-      +resultValues[5],
-      +resultValues[6],
+      Number(resultValues[5]),
+      Number(resultValues[6]),
       (/true/i).test(resultValues[7])
     ));
 
@@ -177,6 +188,11 @@ export default function Statistics() {
             (n: any) => crimeNumbers.push(n.length)
           );
 
+          const crimeArticlesIDs: string[] = [];
+          Object.values(myData[0].stats.articles_by_crime).forEach(
+            (n: any) => crimeArticlesIDs.push(n)
+          );
+
           // getting regions
           const regionsKeys: string[] = [];
           Object.keys(myData[0].stats.articles_by_region).forEach((k) => regionsKeys.push(k));
@@ -184,6 +200,11 @@ export default function Statistics() {
           const regionsNumbers: number[] = [];
           Object.values(myData[0].stats.articles_by_region).forEach(
             (n: any) => regionsNumbers.push(n.length)
+          );
+
+          const regionsArticlesIDs: string[] = [];
+          Object.values(myData[0].stats.articles_by_region).forEach(
+            (n: any) => regionsArticlesIDs.push(n)
           );
 
           // getting articles by date
@@ -218,21 +239,21 @@ export default function Statistics() {
           );
 
           // sort dates by months
-          const artDates = (getGraphData(articlesMonths, articlesMonthsValues, false));
+          const artDates = (getGraphData(articlesMonths, articlesMonthsValues, [], false));
           artDates.sort((a, b) => {
-            const x = a.name < b.name ? -1 : 1;
+            const x: any = a.name < b.name ? -1 : 1;
             return x;
           });
 
           // sort dates by number of articles
-          const artDatesValues = (getGraphData(articlesMonths, articlesMonthsValues, false));
+          const artDatesValues = (getGraphData(articlesMonths, articlesMonthsValues, [], false));
           artDatesValues.sort((a, b) => b.value - a.value);
           setMostArticlesYear(artDatesValues[0].name);
 
           const regionNames = mapRegions(regionsKeys);
 
-          setTopCrimes(getGraphData(crimeKeys, crimeNumbers, true));
-          setRegions(getGraphData(regionNames, regionsNumbers, true));
+          setTopCrimes(getGraphData(crimeKeys, crimeNumbers, crimeArticlesIDs, true));
+          setRegions(getGraphData(regionNames, regionsNumbers, regionsArticlesIDs, true));
           setArticlesDates(artDates);
         }
       }
@@ -250,6 +271,18 @@ export default function Statistics() {
   // ];
 
   const showSearchResults = () => {
+    navigate(`/results?${searchParams.toString()}`);
+  };
+
+  const showArticlesFromGraph = (e: any) => {
+    searchParams.append("page", `${1}`);
+    searchParams.append("ids", `[${e.articlesIDs}]`);
+
+    handleOpen();
+  };
+
+  const showArticlesByIDs = () => {
+    setSearchParams(searchParams);
     navigate(`/results?${searchParams.toString()}`);
   };
 
@@ -271,6 +304,12 @@ export default function Statistics() {
   const regionsGraphText1 = `Most articles about ${query} were published in `;
   const regionsGraphText2 = `. More specifically, we found ${regions[0]?.value} articles about the searched person, that were published in this country.`;
   const datesGraphText = `On the line graph above we can see how articles about ${query} were published during the given time period. From this graph, we can see that most articles about the searched person were published in `;
+
+  const data = {
+    regions,
+    searchParams,
+    navigate
+  };
 
   if (isLoaded) {
     if (totalResults === 0) {
@@ -462,7 +501,7 @@ export default function Statistics() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="value" name="number of found articles" fill="#7163B4" />
+                <Bar dataKey="value" name="number of found articles" fill="#7163B4" onClick={showArticlesFromGraph} />
               </BarChart>
             </ResponsiveContainer>
           </Grid>
@@ -497,7 +536,7 @@ export default function Statistics() {
             </Typography>
           </Grid>
           <Grid item xs={7} marginLeft={2}>
-            <RegionsPieChart regions={regions} />
+            <RegionsPieChart data={data} />
           </Grid>
         </Grid>
         <Grid container spacing={1} justifyContent="center" style={{ textAlign: "center" }}>
@@ -535,6 +574,59 @@ export default function Statistics() {
             </Typography>
           </Grid>
         </Grid>
+        <Modal
+          open={open}
+          onClose={handleClose}
+        >
+          <Box sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            p: 4,
+            px: 4,
+            pb: 3,
+            textAlign: "center"
+          }}
+          >
+            <Typography sx={{ mt: 2, textAlign: "center" }}>
+              Do you want to show related articles?
+            </Typography>
+            <Grid container spacing={3} justifyContent="center" style={{ textAlign: "center" }}>
+              <Grid item>
+                <Button
+                  color="info"
+                  variant="text"
+                  style={{
+                    textAlign: "center",
+                    width: "30%",
+                    backgroundColor: "rgb(38, 166, 154)",
+                    marginBottom: "10px",
+                    marginTop: "30px"
+                  }}
+                  onClick={showArticlesByIDs}
+                >
+                  Yes
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  sx={{
+                    textAlign: "center",
+                    width: "30%",
+                    marginTop: "30px",
+                    marginBottom: "10px"
+                  }}
+                  onClick={handleClose}
+                >
+                  No
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </Modal>
       </div>
     );
   }

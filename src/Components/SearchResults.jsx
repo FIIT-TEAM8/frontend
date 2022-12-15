@@ -30,16 +30,36 @@ export default function SearchResults() {
       setLastSearched(q);
     }
 
-    apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/search?${searchParams.toString()}`, "GET").then(
-      (result) => {
-        if (result.ok) {
-          setActResults(result.data.results);
-          setTotalPages(result.data.total_pages);
-          setTotalResults(result.data.total_results);
-          setIsLoaded(true);
+    const ids = searchParams.get("ids");
+    const query = searchParams.get("q");
+
+    // if there are ids, then show results based on given ids
+    if (ids) {
+      searchParams.delete("q");
+
+      apiCall(window._env_.REACT_APP_STATS_SERVER, `/api/selected?${searchParams.toString()}`, "GET").then(
+        (result) => {
+          if (result.ok) {
+            setActResults(result.data.results);
+            setTotalPages(result.data.total_pages);
+            setTotalResults(result.data.total_results);
+            setIsLoaded(true);
+          }
         }
-      }
-    );
+      );
+      searchParams.append("q", query);
+    } else {
+      apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/search?${searchParams.toString()}`, "GET").then(
+        (result) => {
+          if (result.ok) {
+            setActResults(result.data.results);
+            setTotalPages(result.data.total_pages);
+            setTotalResults(result.data.total_results);
+            setIsLoaded(true);
+          }
+        }
+      );
+    }
   }, [searchParams]);
 
   const handlePageChange = (event, value) => {
@@ -49,7 +69,9 @@ export default function SearchResults() {
     setSearchParams(searchParams);
   };
 
-  const showArticlesResults = () => {
+  const showStatistics = () => {
+    searchParams.delete("ids");
+    searchParams.delete("page");
     navigate(`/stats?${searchParams.toString()}`);
   };
 
@@ -62,7 +84,7 @@ export default function SearchResults() {
               size="large"
               color="secondary"
               variant="text"
-              onClick={showArticlesResults}
+              onClick={showStatistics}
               sx={{
                 width: "28.5vw",
                 borderRadius: "0"
@@ -129,7 +151,7 @@ export default function SearchResults() {
             size="large"
             color="secondary"
             variant="text"
-            onClick={showArticlesResults}
+            onClick={showStatistics}
             sx={{
               width: "28.5vw",
               borderRadius: "0"
