@@ -14,25 +14,28 @@ import { NavigateFunction } from "react-router-dom";
 const renderActiveShape = (props: {
     cx: any; cy: any; midAngle: any; innerRadius: any; outerRadius: any; startAngle: any;
     endAngle: any; fill: any; payload: any; percent: any; value: any;}) => {
-  const RADIAN = Math.PI / 180;
+  // const RADIAN = Math.PI / 180;
   const {
-    cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill,
-    payload, percent, value
+    cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill,
+    payload, value
   } = props;
-  const sin = Math.sin(-RADIAN * midAngle);
-  const cos = Math.cos(-RADIAN * midAngle);
-  const sx = cx + (outerRadius + 10) * cos;
-  const sy = cy + (outerRadius + 10) * sin;
-  const mx = cx + (outerRadius + 30) * cos;
-  const my = cy + (outerRadius + 30) * sin;
-  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
-  const ey = my;
-  const textAnchor = cos >= 0 ? "start" : "end";
+  // const sin = Math.sin(-RADIAN * midAngle);
+  // const cos = Math.cos(-RADIAN * midAngle);
+  // const sx = cx + (outerRadius + 10) * cos;
+  // const sy = cy + (outerRadius + 10) * sin;
+  // const mx = cx + (outerRadius + 30) * cos;
+  // const my = cy + (outerRadius + 30) * sin;
+  // const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+  // const ey = my;
+  // const textAnchor = cos >= 0 ? "start" : "end";
 
   return (
     <g>
-      <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
+      <text x={cx} y={cy - 11} dy={8} textAnchor="middle" fill={fill}>
         {payload.name}
+      </text>
+      <text x={cx} y={cy + 11} dy={8} textAnchor="middle" fill="#757575">
+        {`${value} articles`}
       </text>
       <Sector
         cx={cx}
@@ -52,12 +55,11 @@ const renderActiveShape = (props: {
         outerRadius={outerRadius + 10}
         fill={fill}
       />
-      <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
+      {/* <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
       <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`${value} articles`}</text>
       <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
         {`(Rate ${(percent * 100).toFixed(2)}%)`}
-      </text>
+      </text> */}
     </g>
   );
 };
@@ -116,8 +118,8 @@ export default class RegionsPieChart extends PureComponent<{
               data={data.regions}
               cx="50%"
               cy="50%"
-              innerRadius={70}
-              outerRadius={90}
+              innerRadius={80}
+              outerRadius={100}
               fill="#8884d8"
               dataKey="value"
               onMouseEnter={this.onPieEnter}

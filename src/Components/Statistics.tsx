@@ -561,7 +561,7 @@ export default function Statistics() {
           </Grid>
         </Grid>
         <Grid container spacing={1} justifyContent="center" style={{ textAlign: "center" }}>
-          <Grid item xs={12} order={{ xs: 2, md: 1 }}>
+          <Grid item xs={12} order={{ xs: 2, md: 1 }} marginTop={3}>
             <ResponsiveContainer width="99%" height={180}>
               <LineChart
                 width={500}
