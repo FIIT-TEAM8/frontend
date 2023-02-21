@@ -496,7 +496,7 @@ export default function Statistics() {
           </Grid>
         </Grid>
         <Grid container spacing={1} marginBottom={1} style={{ textAlign: "left" }}>
-          <Grid item xs={12} md={6} order={{ xs: 2, sm: 1 }}>
+          <Grid item xs={12} md={6} order={{ xs: 2, md: 1 }}>
             <ResponsiveContainer className="topCrimesChart" width="99%" height={270}>
               <BarChart
                 width={300}
@@ -517,7 +517,7 @@ export default function Statistics() {
               </BarChart>
             </ResponsiveContainer>
           </Grid>
-          <Grid item xs={12} md={5} marginLeft={5} marginBottom={3} order={{ xs: 1, sm: 2 }}>
+          <Grid item xs={12} md={5} marginLeft={5} marginBottom={3} order={{ xs: 1, md: 2 }}>
             <Typography color="primary" marginTop={4} fontSize={25}>
               {crimesGraphTitle}
             </Typography>
@@ -552,14 +552,14 @@ export default function Statistics() {
           </Grid>
         </Grid>
         <Grid container spacing={1} justifyContent="center" style={{ textAlign: "center" }}>
-          <Grid item xs={12}>
+          <Grid item xs={12} order={{ xs: 2, md: 1 }}>
             <ResponsiveContainer width="99%" height={180}>
               <LineChart
                 width={500}
                 height={200}
                 data={articlesDates}
                 margin={{
-                  top: 20
+                  top: 2
                 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
@@ -571,7 +571,7 @@ export default function Statistics() {
               </LineChart>
             </ResponsiveContainer>
           </Grid>
-          <Grid item xs={12} md={8} style={{ textAlign: "center" }} marginBottom={10}>
+          <Grid item xs={12} md={8} style={{ textAlign: "center" }} marginBottom={5} order={{ xs: 1, md: 2 }}>
             <Typography marginTop={2} color="primary" fontSize={25}>
               {datesGraphTitle}
             </Typography>
