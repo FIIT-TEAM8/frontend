@@ -250,11 +250,22 @@ export default function TitleSearch() {
   return (
     <Grid container style={searchDivStyle} direction="column">
       <Grid container spacing={2} direction="column">
-        <Grid container direction="column" alignItems="center" justifyContent="center">
+        <Grid container direction="column" alignItems="center" justify="center">
           <Grid item>
             <Link to="/" onClick={onAdvancedSearchCancel} style={{ textDecoration: "none" }}>
-              <Grid item xs={10} md={12}>
-                <img src="./adversea_logo.svg" alt="adversea" width="100%" height="auto" />
+              <Grid item>
+                {/* <img src="./adversea_logo.svg" alt="adversea" height="auto" width="100%" /> */}
+                <Box
+                  component="img"
+                  sx={{
+                    height: "auto",
+                    width: "auto",
+                    maxHeight: { xs: 200, md: "100%", lg: "100%" },
+                    maxWidth: { xs: 200, md: "100%", lg: "100%" },
+                  }}
+                  alt="adversea"
+                  src="./adversea_logo.svg"
+                />
               </Grid>
             </Link>
           </Grid>
@@ -262,7 +273,7 @@ export default function TitleSearch() {
             <Typography
               color="error"
               sx={{
-                marginLeft: 25,
+                marginLeft: { xs: 15.5, md: 25, lg: 25 },
                 marginTop: -2,
                 marginBottom: 2,
                 fontSize: 12

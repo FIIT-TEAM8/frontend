@@ -260,16 +260,6 @@ export default function Statistics() {
     );
   }, [searchParams]);
 
-  // const languages = [
-  //   { language: "english", number: 20 },
-  //   { language: "italian", number: 35 },
-  //   { language: "romanian", number: 12 },
-  //   { language: "czech", number: 28 },
-  //   { language: "german", number: 15 },
-  //   { language: "polish", number: 45 },
-  //   { language: "spanish", number: 10 },
-  // ];
-
   const showSearchResults = () => {
     navigate(`/results?${searchParams.toString()}`);
   };
@@ -316,7 +306,7 @@ export default function Statistics() {
       return (
         <div>
           <Grid item container justifyContent="center" spacing={0} marginTop={3} marginBottom={3} columns={16}>
-            <Grid item xs="auto">
+            <Grid item xs={8}>
               <Button
                 size="large"
                 color="info"
@@ -324,7 +314,7 @@ export default function Statistics() {
                 sx={{
                   borderRight: "1px solid",
                   borderRadius: "0",
-                  width: "28.5vw"
+                  width: "100%"
                 }}
                 style={{ backgroundColor: "rgb(38, 166, 154)" }}
               >
@@ -332,15 +322,15 @@ export default function Statistics() {
               </Button>
             </Grid>
 
-            <Grid item xs="auto">
+            <Grid item xs={8}>
               <Button
                 size="large"
                 color="secondary"
                 variant="text"
                 onClick={showSearchResults}
                 sx={{
-                  width: "28.5vw",
-                  borderRadius: "0"
+                  borderRadius: "0",
+                  width: "100%"
                 }}
                 style={{ backgroundColor: "rgb(240, 245, 247)" }}
               >
@@ -397,7 +387,7 @@ export default function Statistics() {
     return (
       <div className="main">
         <Grid item container justifyContent="center" spacing={0} marginTop={3} marginBottom={3} columns={16}>
-          <Grid item xs="auto">
+          <Grid item xs={8}>
             <Button
               size="large"
               color="info"
@@ -405,7 +395,7 @@ export default function Statistics() {
               sx={{
                 borderRight: "1px solid",
                 borderRadius: "0",
-                width: "28.5vw"
+                width: "100%"
               }}
               style={{ backgroundColor: "rgb(38, 166, 154)" }}
             >
@@ -413,14 +403,14 @@ export default function Statistics() {
             </Button>
           </Grid>
 
-          <Grid item xs="auto">
+          <Grid item xs={8}>
             <Button
               size="large"
               color="secondary"
               variant="text"
               onClick={showSearchResults}
               sx={{
-                width: "28.5vw",
+                width: "100%",
                 borderRadius: "0"
               }}
               style={{ backgroundColor: "rgb(240, 245, 247)" }}
@@ -495,8 +485,8 @@ export default function Statistics() {
             </Typography>
           </Grid>
         </Grid>
-        <Grid container spacing={1} marginBottom={1} style={{ textAlign: "left" }}>
-          <Grid item xs={12} md={6} order={{ xs: 2, sm: 1 }}>
+        <Grid container spacing={1} marginBottom={1} sx={{ textAlign: { xs: "center", md: "left" } }}>
+          <Grid item xs={12} md={6} order={{ xs: 2, md: 1 }}>
             <ResponsiveContainer className="topCrimesChart" width="99%" height={270}>
               <BarChart
                 width={300}
@@ -517,7 +507,14 @@ export default function Statistics() {
               </BarChart>
             </ResponsiveContainer>
           </Grid>
-          <Grid item xs={12} md={5} marginLeft={5} marginBottom={3} order={{ xs: 1, sm: 2 }}>
+          <Grid
+            item
+            xs={12}
+            md={5}
+            sx={{ marginLeft: { xs: 0, md: 5 } }}
+            marginBottom={3}
+            order={{ xs: 1, md: 2 }}
+          >
             <Typography color="primary" marginTop={4} fontSize={25}>
               {crimesGraphTitle}
             </Typography>
@@ -532,7 +529,14 @@ export default function Statistics() {
             </Typography>
           </Grid>
         </Grid>
-        <Grid container spacing={0} justifyContent="center" style={{ textAlign: "right" }}>
+        <Grid
+          container
+          spacing={0}
+          justifyContent="center"
+          sx={{
+            textAlign: { xs: "center", md: "right" }
+          }}
+        >
           <Grid item xs={12} md={4}>
             <Typography marginTop={7} color="primary" fontSize={25}>
               {regionsGraphTitle}
@@ -552,14 +556,14 @@ export default function Statistics() {
           </Grid>
         </Grid>
         <Grid container spacing={1} justifyContent="center" style={{ textAlign: "center" }}>
-          <Grid item xs={12}>
+          <Grid item xs={12} order={{ xs: 2, md: 1 }}>
             <ResponsiveContainer width="99%" height={180}>
               <LineChart
                 width={500}
                 height={200}
                 data={articlesDates}
                 margin={{
-                  top: 20
+                  top: 2
                 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
@@ -571,7 +575,7 @@ export default function Statistics() {
               </LineChart>
             </ResponsiveContainer>
           </Grid>
-          <Grid item xs={12} md={8} style={{ textAlign: "center" }} marginBottom={10}>
+          <Grid item xs={12} md={8} style={{ textAlign: "center" }} marginBottom={5} order={{ xs: 1, md: 2 }}>
             <Typography marginTop={2} color="primary" fontSize={25}>
               {datesGraphTitle}
             </Typography>
@@ -646,7 +650,7 @@ export default function Statistics() {
   return (
     <div>
       <Grid item container justifyContent="center" spacing={0} marginTop={3} marginBottom={3} columns={16}>
-        <Grid item xs="auto">
+        <Grid item xs={8}>
           <Button
             size="large"
             color="info"
@@ -654,7 +658,7 @@ export default function Statistics() {
             sx={{
               borderRight: "1px solid",
               borderRadius: "0",
-              width: "28.5vw"
+              width: "100%"
             }}
             style={{ backgroundColor: "rgb(38, 166, 154)" }}
           >
@@ -662,15 +666,15 @@ export default function Statistics() {
           </Button>
         </Grid>
 
-        <Grid item xs="auto">
+        <Grid item xs={8}>
           <Button
             size="large"
             color="secondary"
             variant="text"
             onClick={showSearchResults}
             sx={{
-              width: "28.5vw",
-              borderRadius: "0"
+              borderRadius: "0",
+              width: "100%"
             }}
             style={{ backgroundColor: "rgb(240, 245, 247)" }}
           >
