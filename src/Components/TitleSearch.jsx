@@ -273,7 +273,6 @@ export default function TitleSearch() {
             <Typography
               color="error"
               sx={{
-                // marginLeft: 25,
                 marginLeft: { xs: 15.5, md: 25, lg: 25 },
                 marginTop: -2,
                 marginBottom: 2,
