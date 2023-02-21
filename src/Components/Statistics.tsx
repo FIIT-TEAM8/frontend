@@ -495,7 +495,7 @@ export default function Statistics() {
             </Typography>
           </Grid>
         </Grid>
-        <Grid container spacing={1} marginBottom={1} style={{ textAlign: "left" }}>
+        <Grid container spacing={1} marginBottom={1} sx={{ textAlign: { xs: "center", md: "left" } }}>
           <Grid item xs={12} md={6} order={{ xs: 2, md: 1 }}>
             <ResponsiveContainer className="topCrimesChart" width="99%" height={270}>
               <BarChart
@@ -532,7 +532,7 @@ export default function Statistics() {
             </Typography>
           </Grid>
         </Grid>
-        <Grid container spacing={0} justifyContent="center" style={{ textAlign: "right" }}>
+        <Grid container spacing={0} justifyContent="center" sx={{ textAlign: { xs: "center", md: "right" } }}>
           <Grid item xs={12} md={4}>
             <Typography marginTop={7} color="primary" fontSize={25}>
               {regionsGraphTitle}
