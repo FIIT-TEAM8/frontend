@@ -19,40 +19,41 @@ export default function ResultItem({ item }) {
         lg={user ? 11.7 : 12}
       >
         <Stack spacing={1}>
-          <Stack
-            direction="row"
-            divider={(
-              <Divider
-                sx={{ borderRightWidth: 0.5 }}
-                style={{ background: "#757575" }}
-                orientation="vertical"
-                flexItem
-              />
-            )}
-            spacing={2}
-          >
-            <Box>
-              <Typography noWrap color="secondary">
-                {item.published.length !== 0 ? item.published[0].slice(5, -13) : "Missing published date"}
-              </Typography>
-            </Box>
-            <Link
-              href={item.link}
-              target="_blank"
-              rel="noopener"
-              underline="none"
-              noWrap
+          <Grid item>
+            <Stack
+              direction="row"
+              divider={(
+                <Divider
+                  sx={{ borderRightWidth: 0.5 }}
+                  style={{ background: "#757575" }}
+                  orientation="vertical"
+                  flexItem
+                />
+              )}
+              spacing={1}
             >
-              <Typography noWrap color="secondary">
-                {new URL(item.link).hostname.replace("www.", "")}
-              </Typography>
-            </Link>
-            <RouterLink to={`/archive?link=${item.link}`}>
-              <Typography noWrap color="secondary">
-                Archived Article
-              </Typography>
-            </RouterLink>
-          </Stack>
+              <Box>
+                <Typography color="secondary">
+                  {item.published.length !== 0 ? item.published[0].slice(5, -13) : "Missing published date"}
+                </Typography>
+              </Box>
+              <Link
+                href={item.link}
+                target="_blank"
+                rel="noopener"
+                underline="none"
+              >
+                <Typography color="secondary">
+                  {new URL(item.link).hostname.replace("www.", "")}
+                </Typography>
+              </Link>
+              <RouterLink to={`/archive?link=${item.link}`}>
+                <Typography color="secondary">
+                  Archived Article
+                </Typography>
+              </RouterLink>
+            </Stack>
+          </Grid>
           <Link
             style={{ color: theme.palette.primary.main }}
             href={item.link}

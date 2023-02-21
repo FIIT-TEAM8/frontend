@@ -283,7 +283,7 @@ export default function TitleSearch() {
             </Typography>
           </Grid>
           <Grid item>
-            <Typography color="secondary">
+            <Typography color="secondary" sx={{ fontSize: { xs: "80%", md: "100%" } }}>
               Your adverse media screening portal.
               {" "}
               <Link to="/about">Learn more</Link>

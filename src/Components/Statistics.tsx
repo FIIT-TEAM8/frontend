@@ -343,7 +343,7 @@ export default function Statistics() {
               <Typography
                 sx={{
                   marginTop: 2,
-                  marginBottom: 2,
+                  marginBottom: { xs: 0, md: 2 },
                   fontSize: 30,
                   fontWeight: 500
                 }}
@@ -355,7 +355,7 @@ export default function Statistics() {
             <Grid item>
               <Typography
                 sx={{
-                  marginTop: 2,
+                  marginTop: { xs: 0, md: 2 },
                   marginBottom: 2,
                   fontSize: 30,
                   fontWeight: 500
@@ -427,7 +427,7 @@ export default function Statistics() {
             <Typography
               sx={{
                 marginTop: 2,
-                marginBottom: 2,
+                marginBottom: { xs: 0, md: 2 },
                 fontSize: 30,
                 fontWeight: 500
               }}
@@ -442,7 +442,7 @@ export default function Statistics() {
           >
             <Typography
               sx={{
-                marginTop: 2,
+                marginTop: { xs: 0, md: 2 },
                 marginBottom: 2,
                 fontSize: 30,
                 fontWeight: 500
@@ -486,7 +486,12 @@ export default function Statistics() {
           </Grid>
         </Grid>
         <Grid container spacing={1} marginBottom={1} sx={{ textAlign: { xs: "center", md: "left" } }}>
-          <Grid item xs={12} md={6} order={{ xs: 2, md: 1 }}>
+          <Grid
+            item
+            xs={12}
+            md={6}
+            order={{ xs: 2, md: 1 }}
+          >
             <ResponsiveContainer className="topCrimesChart" width="99%" height={270}>
               <BarChart
                 width={300}
@@ -687,7 +692,7 @@ export default function Statistics() {
           <Typography
             sx={{
               marginTop: 2,
-              marginBottom: 2,
+              marginBottom: { xs: 0, md: 2 },
               fontSize: 30,
               fontWeight: 500
             }}
@@ -699,7 +704,7 @@ export default function Statistics() {
         <Grid item>
           <Typography
             sx={{
-              marginTop: 2,
+              marginTop: { xs: 0, md: 2 },
               marginBottom: 2,
               fontSize: 30,
               fontWeight: 500
