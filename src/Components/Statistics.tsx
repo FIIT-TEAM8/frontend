@@ -260,16 +260,6 @@ export default function Statistics() {
     );
   }, [searchParams]);
 
-  // const languages = [
-  //   { language: "english", number: 20 },
-  //   { language: "italian", number: 35 },
-  //   { language: "romanian", number: 12 },
-  //   { language: "czech", number: 28 },
-  //   { language: "german", number: 15 },
-  //   { language: "polish", number: 45 },
-  //   { language: "spanish", number: 10 },
-  // ];
-
   const showSearchResults = () => {
     navigate(`/results?${searchParams.toString()}`);
   };
@@ -517,7 +507,14 @@ export default function Statistics() {
               </BarChart>
             </ResponsiveContainer>
           </Grid>
-          <Grid item xs={12} md={5} marginLeft={5} marginBottom={3} order={{ xs: 1, md: 2 }}>
+          <Grid
+            item
+            xs={12}
+            md={5}
+            sx={{ marginLeft: { xs: 0, md: 5 } }}
+            marginBottom={3}
+            order={{ xs: 1, md: 2 }}
+          >
             <Typography color="primary" marginTop={4} fontSize={25}>
               {crimesGraphTitle}
             </Typography>
@@ -532,7 +529,14 @@ export default function Statistics() {
             </Typography>
           </Grid>
         </Grid>
-        <Grid container spacing={0} justifyContent="center" sx={{ textAlign: { xs: "center", md: "right" } }}>
+        <Grid
+          container
+          spacing={0}
+          justifyContent="center"
+          sx={{
+            textAlign: { xs: "center", md: "right" }
+          }}
+        >
           <Grid item xs={12} md={4}>
             <Typography marginTop={7} color="primary" fontSize={25}>
               {regionsGraphTitle}
