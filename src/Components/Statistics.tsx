@@ -491,6 +491,7 @@ export default function Statistics() {
             xs={12}
             md={6}
             order={{ xs: 2, md: 1 }}
+            sx={{ marginLeft: { xs: -2, md: 0 } }}
           >
             <ResponsiveContainer className="topCrimesChart" width="99%" height={270}>
               <BarChart
@@ -520,7 +521,7 @@ export default function Statistics() {
             marginBottom={3}
             order={{ xs: 1, md: 2 }}
           >
-            <Typography color="primary" marginTop={4} fontSize={25}>
+            <Typography color="primary" sx={{ marginTop: { xs: 2, md: 4 } }} fontSize={25}>
               {crimesGraphTitle}
             </Typography>
             <Typography marginTop={1} color="secondary" display="inline">
@@ -543,7 +544,7 @@ export default function Statistics() {
           }}
         >
           <Grid item xs={12} md={4}>
-            <Typography marginTop={7} color="primary" fontSize={25}>
+            <Typography sx={{ marginTop: { xs: 4, md: 7 } }} color="primary" fontSize={25}>
               {regionsGraphTitle}
             </Typography>
             <Typography marginTop={1} color="secondary" display="inline">
@@ -561,7 +562,12 @@ export default function Statistics() {
           </Grid>
         </Grid>
         <Grid container spacing={1} justifyContent="center" style={{ textAlign: "center" }}>
-          <Grid item xs={12} order={{ xs: 2, md: 1 }} marginTop={3}>
+          <Grid
+            item
+            xs={12}
+            order={{ xs: 2, md: 1 }}
+            sx={{ marginTop: { xs: 0, md: 3 }, marginLeft: { xs: -4, md: 0 } }}
+          >
             <ResponsiveContainer width="99%" height={180}>
               <LineChart
                 width={500}
@@ -581,7 +587,7 @@ export default function Statistics() {
             </ResponsiveContainer>
           </Grid>
           <Grid item xs={12} md={8} style={{ textAlign: "center" }} marginBottom={5} order={{ xs: 1, md: 2 }}>
-            <Typography marginTop={2} color="primary" fontSize={25}>
+            <Typography sx={{ marginTop: { xs: 0, md: 2 } }} color="primary" fontSize={25}>
               {datesGraphTitle}
             </Typography>
             <Typography marginTop={1} color="secondary" display="inline">
