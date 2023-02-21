@@ -430,7 +430,10 @@ export default function Statistics() {
           </Grid>
         </Grid>
         <Grid item container justifyContent="center" spacing={1}>
-          <Grid item>
+          <Grid
+            item
+            xs="auto"
+          >
             <Typography
               sx={{
                 marginTop: 2,
@@ -443,7 +446,10 @@ export default function Statistics() {
               {statsText}
             </Typography>
           </Grid>
-          <Grid item>
+          <Grid
+            item
+            xs="auto"
+          >
             <Typography
               sx={{
                 marginTop: 2,
@@ -457,8 +463,11 @@ export default function Statistics() {
             </Typography>
           </Grid>
         </Grid>
-        <Grid item container justifyContent="center" spacing={0} direction="column" style={{ textAlign: "center" }}>
-          <Grid item>
+        <Grid item container justifyContent="center" spacing={0} direction="column" style={{ textAlign: "center" }} xs="auto">
+          <Grid
+            item
+            xs="auto"
+          >
             <Typography
               sx={{
                 fontSize: 15,
@@ -470,7 +479,10 @@ export default function Statistics() {
               {totalResults}
             </Typography>
           </Grid>
-          <Grid item>
+          <Grid
+            item
+            xs="auto"
+          >
             <Typography
               sx={{
                 fontSize: 15,
@@ -484,8 +496,8 @@ export default function Statistics() {
           </Grid>
         </Grid>
         <Grid container spacing={1} marginBottom={2} style={{ textAlign: "left" }}>
-          <Grid item xs={6}>
-            <ResponsiveContainer className="topCrimesChart" width="100%" height={270}>
+          <Grid item xs={12} md={6}>
+            <ResponsiveContainer className="topCrimesChart" width="99%" height={270}>
               <BarChart
                 width={300}
                 height={200}
@@ -505,7 +517,7 @@ export default function Statistics() {
               </BarChart>
             </ResponsiveContainer>
           </Grid>
-          <Grid item xs={5} marginLeft={5}>
+          <Grid item xs={12} md={5} marginLeft={5}>
             <Typography color="primary" marginTop={4} fontSize={25}>
               {crimesGraphTitle}
             </Typography>
@@ -521,7 +533,7 @@ export default function Statistics() {
           </Grid>
         </Grid>
         <Grid container spacing={0} justifyContent="center" style={{ textAlign: "right" }}>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <Typography marginTop={7} color="primary" fontSize={25}>
               {regionsGraphTitle}
             </Typography>
@@ -535,13 +547,13 @@ export default function Statistics() {
               {regionsGraphText2}
             </Typography>
           </Grid>
-          <Grid item xs={7} marginLeft={2}>
+          <Grid item xs={12} md={7} marginLeft={2}>
             <RegionsPieChart data={data} />
           </Grid>
         </Grid>
         <Grid container spacing={1} justifyContent="center" style={{ textAlign: "center" }}>
           <Grid item xs={12}>
-            <ResponsiveContainer width="100%" height={180}>
+            <ResponsiveContainer width="99%" height={180}>
               <LineChart
                 width={500}
                 height={200}
@@ -559,7 +571,7 @@ export default function Statistics() {
               </LineChart>
             </ResponsiveContainer>
           </Grid>
-          <Grid item xs={8} style={{ textAlign: "center" }} marginBottom={10}>
+          <Grid item xs={12} md={8} style={{ textAlign: "center" }} marginBottom={10}>
             <Typography marginTop={2} color="primary" fontSize={25}>
               {datesGraphTitle}
             </Typography>

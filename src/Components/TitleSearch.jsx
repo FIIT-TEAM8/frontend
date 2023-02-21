@@ -253,7 +253,9 @@ export default function TitleSearch() {
         <Grid container direction="column" alignItems="center" justifyContent="center">
           <Grid item>
             <Link to="/" onClick={onAdvancedSearchCancel} style={{ textDecoration: "none" }}>
-              <img src="./adversea_logo.svg" alt="adversea" />
+              <Grid item xs={10} md={12}>
+                <img src="./adversea_logo.svg" alt="adversea" width="100%" height="auto" />
+              </Grid>
             </Link>
           </Grid>
           <Grid item alignItems="right">
