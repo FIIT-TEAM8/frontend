@@ -1,3 +1,5 @@
+// import { Regions } from "../Components/AdvancedSearch-handler";
+
 /* eslint-disable no-unused-vars */
 export interface Article {
   _id: string;
@@ -14,12 +16,16 @@ interface StatsData {
   articlesCount: number;
   query: string;
   stats: {
-    articlesByCrime: {},
-    articlesByDate: {},
-    articlesByLanguage: {},
-    articlesByRegion: {}
+    articlesByCrime: {};
+    articlesByDate: {};
+    articlesByLanguage: {};
+    articlesByRegion: {};
   };
 }
+
+export type Regions = {
+  [key: string]: string;
+};
 
 export interface ArticleInReport {
   id: string;
@@ -42,6 +48,19 @@ export interface APIResponse {
   status: any;
 }
 
+export type AdvSearchItems = {
+  from: {
+    value: string;
+    defaultValue: string;
+  };
+  to: {
+    value: string;
+    defaultValue: string;
+  };
+  regions: Array<string>;
+  keywords: Array<string>;
+};
+
 type RemoveArcticleReport = (articleId: string) => void;
 type AddArticleReport = (article: ArticleInReport) => void;
 type Login = (loginData: any) => void;
@@ -54,7 +73,7 @@ export interface User {
   id?: string;
   username?: any;
   articlesInReport: Array<ArticleInReport>;
-  reportId?: number;
+  reportId?: number | string;
   removeArcticleReport?: RemoveArcticleReport;
   addArticleReport?: AddArticleReport;
   login?: Login;
