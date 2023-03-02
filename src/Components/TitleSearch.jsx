@@ -160,6 +160,7 @@ export default function TitleSearch() {
         <Grid item>
           <form onSubmit={onSubmit}>
             <TextField
+              placeholder="check your customer, colleague, ... or tinder match"
               id="outlined-search"
               color="secondary"
               value={searchTerm}
