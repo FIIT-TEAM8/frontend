@@ -97,7 +97,7 @@ export default function TitleSearch() {
     setShowingResults(true);
     setSearchParams(searchParams);
     setAdvancedSearchOpen(false);
-    navigate(`results?${searchParams.toString()}`);
+    navigate(`stats?${searchParams.toString()}`);
   };
 
   const updateNumSelectedFilters = (num) => {
@@ -145,12 +145,12 @@ export default function TitleSearch() {
                 fontSize: 12
               }}
             >
-              Beta version
+              beta version
             </Typography>
           </Grid>
           <Grid item>
             <Typography color="secondary" sx={{ fontSize: { xs: "80%", md: "100%" } }}>
-              Your adverse media screening portal.
+              your adverse media screening portal.
               {" "}
               <Link to="/about">learn more</Link>
               .
