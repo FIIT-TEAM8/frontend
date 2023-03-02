@@ -6,9 +6,9 @@ import {
   Grid,
   InputAdornment,
   IconButton,
-  Search,
   Box
 } from "@mui/material";
+import { Search } from "@mui/icons-material";
 import {
   Outlet, useNavigate, useSearchParams, Link
 } from "react-router-dom";

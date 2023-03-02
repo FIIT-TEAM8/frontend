@@ -12,10 +12,8 @@ export default function UserProvider({ children }: Props) {
   // const [accessToken, setAccessToken] = useState(localStorage.getItem("access_token"));
   // user = {username: "", }
   const [user, setUser] = useState<User | undefined>(undefined);
-  const [articlesInReport, setArticlesInReport] = useState<
-    Array<ArticleInReport>
-  >([]);
-  const [reportId, setReportId] = useState<number>(0);
+  const [articlesInReport, setArticlesInReport] = useState<Array<ArticleInReport>>([]);
+  const [reportId, setReportId] = useState<number | string>(0);
 
   const refresh = async () => {
     const loginRefToken = getCookieToken("__refToken");
@@ -30,7 +28,7 @@ export default function UserProvider({ children }: Props) {
       username: loginRefToken.username,
       id: loginRefToken.id,
       articlesInReport,
-      reportId,
+      reportId
     };
 
     setUser(loggedUser);
@@ -46,7 +44,11 @@ export default function UserProvider({ children }: Props) {
 
     // use user id from loginRefToken
     // @ts-ignore: Property '_env_' does not exist on type 'Window & typeof globalThis'.
-    await apiCall(window._env_.REACT_APP_NODE_SERVER_URL, `/api/report/${loginRefToken.id}?status=In Progress`, "GET")
+    await apiCall(
+      window._env_.REACT_APP_NODE_SERVER_URL,
+      `/api/report/${loginRefToken.id}?status=In Progress`,
+      "GET"
+    )
       .then((result: APIResponse) => {
         if (result.ok && result.data) {
           console.log("PDF report was succesfully loaded.");
@@ -69,14 +71,17 @@ export default function UserProvider({ children }: Props) {
   // TODO: change from any
   const login = async (loginData: any): Promise<boolean> => {
     // @ts-ignore: Property '_env_' does not exist on type 'Window & typeof globalThis'.
-    const isLogged = await apiCall(window._env_.REACT_APP_NODE_SERVER_URL, "/api/user/login", "POST", loginData).then(
-      (result: APIResponse) => {
-        if (result.ok) {
-          return true;
-        }
-        return false;
+    const isLogged = await apiCall(
+      window._env_.REACT_APP_NODE_SERVER_URL,
+      "/api/user/login",
+      "POST",
+      loginData
+    ).then((result: APIResponse) => {
+      if (result.ok) {
+        return true;
       }
-    );
+      return false;
+    });
 
     if (isLogged) {
       // setUser({ username: loginData.username });
@@ -102,12 +107,10 @@ export default function UserProvider({ children }: Props) {
     Cookies.remove("__refToken");
   };
 
-  const updateReportAPI = (
-    newArticlesInReport: Array<ArticleInReport>
-  ): void => {
+  const updateReportAPI = (newArticlesInReport: Array<ArticleInReport>): void => {
     // @ts-ignore: Property '_env_' does not exist on type 'Window & typeof globalThis'.
     apiCall(window._env_.REACT_APP_NODE_SERVER_URL, `/api/report/update/${reportId}`, "POST", {
-      articlesInReport: newArticlesInReport,
+      articlesInReport: newArticlesInReport
     })
       .then((result) => {
         if (result.ok) {
@@ -128,7 +131,7 @@ export default function UserProvider({ children }: Props) {
       // @ts-ignore: Property '_env_' does not exist on type 'Window & typeof globalThis'.
       apiCall(window._env_.REACT_APP_NODE_SERVER_URL, "/api/report/create", "POST", {
         userId: user.id,
-        articlesInReport: newArticlesInReport,
+        articlesInReport: newArticlesInReport
       })
         .then((result: APIResponse) => {
           if (result.ok && result.data) {
@@ -157,9 +160,7 @@ export default function UserProvider({ children }: Props) {
 
   const removeArcticleReport = (articleId: string): void => {
     setArticlesInReport((prevState) => {
-      const articleIndex = prevState.findIndex(
-        (article) => article.id === articleId
-      );
+      const articleIndex = prevState.findIndex((article) => article.id === articleId);
 
       // don't change state, when article isn't in it
       if (articleIndex !== -1) {
@@ -203,7 +204,7 @@ export default function UserProvider({ children }: Props) {
         signup,
         articlesInReport,
         addArticleReport,
-        removeArcticleReport,
+        removeArcticleReport
       }}
     >
       {children}

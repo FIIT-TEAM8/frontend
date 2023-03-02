@@ -43,7 +43,7 @@ interface Data {
 
 export interface APIResponse {
   ok?: boolean;
-  data?: Data | Regions;
+  data?: Data;
   blobData?: any; // check something for ReadableStream,
   status: any;
 }
@@ -73,7 +73,7 @@ export interface User {
   id?: string;
   username?: any;
   articlesInReport: Array<ArticleInReport>;
-  reportId?: number;
+  reportId?: number | string;
   removeArcticleReport?: RemoveArcticleReport;
   addArticleReport?: AddArticleReport;
   login?: Login;
