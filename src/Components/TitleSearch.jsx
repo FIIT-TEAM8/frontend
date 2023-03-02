@@ -6,7 +6,8 @@ import {
   Grid,
   InputAdornment,
   IconButton,
-  Search
+  Search,
+  Box
 } from "@mui/material";
 import {
   Outlet, useNavigate, useSearchParams, Link
@@ -118,8 +119,20 @@ export default function TitleSearch() {
       <Grid container spacing={2} direction="column">
         <Grid container direction="column" alignItems="center" justify="center">
           <Grid item>
-            <Link to="/search" style={{ textDecoration: "none" }}>
-              <img src="/adversea_logo.svg" alt="adversea" />
+            <Link to=".." style={{ textDecoration: "none" }}>
+              <Grid item>
+                <Box
+                  component="img"
+                  sx={{
+                    height: "auto",
+                    width: "auto",
+                    maxHeight: { xs: 200, md: "100%", lg: "100%" },
+                    maxWidth: { xs: 200, md: "100%", lg: "100%" }
+                  }}
+                  alt="adversea"
+                  src="/adversea_logo.svg"
+                />
+              </Grid>
             </Link>
           </Grid>
           <Grid item alignItems="right">

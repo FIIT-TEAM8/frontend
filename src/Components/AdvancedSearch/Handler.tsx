@@ -77,7 +77,6 @@ export default function Handler({
     setCanSubmit(submitAllowed);
   }, [submitAllowed]);
 
-  // calculate number of selected filters
   useEffect(() => {
     setNumSelectedFilters(() => {
       const yearFrom = selectedFilters.from.defaultValue !== selectedFilters.from.value ? 1 : 0;
@@ -215,6 +214,7 @@ export default function Handler({
   };
 
   const onApply = () => {
+    // can submit only if the search term is not empty
     if (canSubmit) {
       updateSearchParams(selectedFilters);
       onHide();
