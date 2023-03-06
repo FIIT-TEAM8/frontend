@@ -1,20 +1,11 @@
 import {
-  Button,
-  Grid,
-  Typography,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  Button, Grid, Typography, FormControl, InputLabel, Select, MenuItem
 } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import ClearIcon from "@mui/icons-material/Clear";
 import React, { useState, useEffect } from "react";
-import {
-  StyledToggleButton,
-  StyledToggleButtonGroup,
-} from "../Style/StyledToggleButton";
-import { emptyFilters } from "../Utils/AdvancedSearchUtils";
+import { StyledToggleButton, StyledToggleButtonGroup } from "../../Style/StyledToggleButton";
+import { emptyFilters } from "../../Utils/AdvancedSearchUtils";
 
 export default function AdvancedSearch({
   allYearsFromAPI,
@@ -28,12 +19,15 @@ export default function AdvancedSearch({
   onHide,
   onClear,
   onApply,
-  onCancel,
+  onCancel
 }) {
   const [selectedFilters, setSelectedFilters] = useState(emptyFilters);
   const [allYears, setAllYears] = useState([]);
   const [allRegions, setAllRegions] = useState([]);
   const [allKeywords, setAllKeywords] = useState([]);
+
+  const isYearFilterSelected = selectedFilters.from.value !== selectedFilters.from.defaultValue
+    || selectedFilters.to.value !== selectedFilters.to.defaultValue;
 
   useEffect(() => {
     setSelectedFilters(selectedAdvancedFilters);
@@ -64,19 +58,16 @@ export default function AdvancedSearch({
   return (
     <Grid container spacing={2} sx={{ pt: 2 }}>
       <Grid item>
-        {selectedFilters.from.value !== selectedFilters.from.defaultValue
-        || selectedFilters.to.value !== selectedFilters.to.defaultValue ? (
-          <Typography color="primary">Year of publication</Typography>
-          ) : (
-            <Typography color="secondary">Year of publication</Typography>
-          )}
+        <Typography color={isYearFilterSelected ? "primary" : "secondary"}>
+          year of publication
+        </Typography>
       </Grid>
 
       <Grid item container spacing={1} direction="row">
         <Grid item container xs={5} justifyContent="center">
           {selectedFilters.from.value && (
             <FormControl variant="standard">
-              <InputLabel>From</InputLabel>
+              <InputLabel>from</InputLabel>
               <Select
                 label="From"
                 value={selectedFilters.from.value}
@@ -93,12 +84,7 @@ export default function AdvancedSearch({
         </Grid>
 
         <Grid item container xs justifyContent="center">
-          <Typography
-            variant="h2"
-            component="p"
-            color="secondary"
-            sx={{ pt: 2 }}
-          >
+          <Typography variant="h2" component="p" color="secondary" sx={{ pt: 2 }}>
             -
           </Typography>
         </Grid>
@@ -106,19 +92,13 @@ export default function AdvancedSearch({
         <Grid item container xs={5} justifyContent="center">
           {selectedFilters.to.value && (
             <FormControl variant="standard">
-              <InputLabel>To</InputLabel>
-              <Select
-                label="To"
-                value={selectedFilters.to.value}
-                onChange={handleChangeYearTo}
-              >
-                {allYears
-                  .slice(allYears.indexOf(selectedFilters.from.value))
-                  .map((year) => (
-                    <MenuItem key={year} value={year}>
-                      {year}
-                    </MenuItem>
-                  ))}
+              <InputLabel>to</InputLabel>
+              <Select label="To" value={selectedFilters.to.value} onChange={handleChangeYearTo}>
+                {allYears.slice(allYears.indexOf(selectedFilters.from.value)).map((year) => (
+                  <MenuItem key={year} value={year}>
+                    {year}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           )}
@@ -126,17 +106,12 @@ export default function AdvancedSearch({
       </Grid>
 
       <Grid item>
-        {selectedFilters.regions.length ? (
-          <Typography color="primary">Region</Typography>
-        ) : (
-          <Typography color="secondary">Region</Typography>
-        )}
+        <Typography color={selectedFilters.regions.length ? "primary" : "secondary"}>
+          regions
+        </Typography>
       </Grid>
 
-      <StyledToggleButtonGroup
-        value={selectedFilters.regions}
-        onChange={handleRegionClick}
-      >
+      <StyledToggleButtonGroup value={selectedFilters.regions} onChange={handleRegionClick}>
         {allRegions.map((region) => (
           <StyledToggleButton
             key={region}
@@ -151,16 +126,13 @@ export default function AdvancedSearch({
 
       <Grid item>
         {selectedFilters.keywords.length ? (
-          <Typography color="primary">Included keywords</Typography>
+          <Typography color="primary">included keywords</Typography>
         ) : (
-          <Typography color="secondary">Included keywords</Typography>
+          <Typography color="secondary">included keywords</Typography>
         )}
       </Grid>
 
-      <StyledToggleButtonGroup
-        value={selectedFilters.keywords}
-        onChange={handleKeywordClick}
-      >
+      <StyledToggleButtonGroup value={selectedFilters.keywords} onChange={handleKeywordClick}>
         {allKeywords.map((keyword) => (
           <StyledToggleButton
             key={keyword}
@@ -204,12 +176,7 @@ export default function AdvancedSearch({
           </Button>
         </Grid>
         <Grid item>
-          <Button
-            color="secondary"
-            variant="contained"
-            size="small"
-            onClick={onCancel}
-          >
+          <Button color="secondary" variant="contained" size="small" onClick={onCancel}>
             Cancel
           </Button>
         </Grid>
