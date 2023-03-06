@@ -133,7 +133,6 @@ export default function SearchResults() {
           <Box my={2} display="flex" justifyContent="center">
             {totalPages > 1 && (
             <Pagination
-              size="small"
               count={totalPages}
               page={parseInt(searchParams.get("page"), 10)}
               onChange={handlePageChange}

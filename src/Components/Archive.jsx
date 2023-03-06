@@ -3,11 +3,11 @@ import { useSearchParams } from "react-router-dom";
 import {
   Box,
   LinearProgress,
-  Grid,
+  Stack,
   Typography,
   TextField,
   InputAdornment,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import { format } from "date-fns";
@@ -15,15 +15,28 @@ import DOMPurify from "dompurify";
 import { apiCall } from "../Utils/APIConnector";
 import useWindowSize from "../Utils/Screen";
 import MainHeading from "./MainHeading";
-import TextFlag from "./TextFlag";
 
 const defaultOptions = {
-  ALLOWED_TAGS: ["b", "i", "em", "strong", "a", "h1", "h2", "h3", "h4", "h5", "h6", "p", "span"],
-  ALLOWED_ATTR: ["href"]
+  ALLOWED_TAGS: [
+    "b",
+    "i",
+    "em",
+    "strong",
+    "a",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "p",
+    "span",
+  ],
+  ALLOWED_ATTR: ["href"],
 };
 
 const sanitize = (dirty, options) => ({
-  __html: DOMPurify.sanitize(dirty, { ...defaultOptions, ...options })
+  __html: DOMPurify.sanitize(dirty, { ...defaultOptions, ...options }),
 });
 
 function SanitizedHTML({ html, options }) {
@@ -37,7 +50,7 @@ export function ArchivedArticle({ url = "", displayArticle = undefined }) {
     keywords: [],
     published: "Mon, 04 Jan 2016 08:00:00 GMT",
     region: "",
-    link: ""
+    link: "",
   });
   const [isLoading, setIsloading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -68,7 +81,11 @@ export function ArchivedArticle({ url = "", displayArticle = undefined }) {
   if (error) {
     return (
       <Box sx={{ width: "100%" }}>
-        <LinearProgress variant="determinate" value={loadingProgress} color="error" />
+        <LinearProgress
+          variant="determinate"
+          value={loadingProgress}
+          color="error"
+        />
         <Typography paragraph color="error">
           {error}
         </Typography>
@@ -82,7 +99,11 @@ export function ArchivedArticle({ url = "", displayArticle = undefined }) {
         variant={isLoading ? "indeterminate" : "determinate"}
         value={loadingProgress}
       />
-      <Typography variant="caption" color="secondary" style={{ padding: "20px 0" }}>
+      <Typography
+        variant="caption"
+        color="secondary"
+        style={{ padding: "20px 0" }}
+      >
         Published
         {" "}
         {format(new Date(article.published), "yyyy/MM/dd")}
@@ -95,13 +116,21 @@ export function ArchivedArticle({ url = "", displayArticle = undefined }) {
         <a href={article.link}>{article.title}</a>
       </Typography>
 
-      <Grid container flexWrap="wrap" direction="row" color="secondary">
+      <Stack direction="row" color="secondary" spacing={2}>
         {article.keywords.map((crime) => (
-          <Grid pr={1} pb={1} item key={crime}>
-            <TextFlag value={crime} />
-          </Grid>
+          <Box
+            key={crime}
+            sx={{
+              pl: 0.7,
+              pr: 0.7,
+              borderRadius: 1.5,
+            }}
+            bgcolor="#e6e7eb"
+          >
+            <Typography color="secondary">{crime}</Typography>
+          </Box>
         ))}
-      </Grid>
+      </Stack>
 
       <Typography paragraph color="secondary" style={{ padding: "20px 0" }}>
         <SanitizedHTML html={article.html} options={{}} />
@@ -119,7 +148,7 @@ export default function Archive() {
 
   const searchDivStyle = {
     margin: "auto",
-    padding: shouldCollapse ? "50px 7%" : "50px 20%"
+    padding: shouldCollapse ? "50px 7%" : "50px 20%",
   };
 
   useEffect(() => {
@@ -161,7 +190,7 @@ export default function Archive() {
                   <Search />
                 </IconButton>
               </InputAdornment>
-            )
+            ),
           }}
         />
       </form>

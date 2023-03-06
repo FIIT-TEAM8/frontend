@@ -1,12 +1,15 @@
 /* eslint-disable no-param-reassign */
 import {
+  Collapse,
+  IconButton,
   TextField,
   Typography,
-  Button,
-  Grid,
   InputAdornment,
-  IconButton,
-  Box
+  Stack,
+  Button,
+  Box,
+  ButtonBase,
+  Grid
 } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import {
@@ -14,8 +17,9 @@ import {
 } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import useWindowSize from "../Utils/Screen";
-import Handler from "./AdvancedSearch/Handler";
-import AppliedFilters from "./AdvancedSearch/AppliedFilters";
+import { apiCall } from "../Utils/APIConnector";
+import AdvancedSearch from "./AdvancedSearch";
+import { emptyFilters, getYears } from "../Utils/AdvancedSearchUtils";
 
 export default function TitleSearch() {
   const navigate = useNavigate();
@@ -25,10 +29,13 @@ export default function TitleSearch() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [showingResults, setShowingResults] = useState(false);
-  const [shouldSubmitSearchParams, setShouldSubmitSearchParams] = useState(true);
 
   // states for advanced search
   const [advancedSearchOpen, setAdvancedSearchOpen] = useState(false);
+  const [allYears, setAllYears] = useState([]);
+  const [allRegions, setAllRegions] = useState([]);
+  const [allKeywords, setAllKeywords] = useState([]);
+  const [selectedFilters, setSelectedFilters] = useState(emptyFilters);
   const [numSelectedFilters, setNumSelectedFilters] = useState(0);
 
   const searchDivStyle = {
@@ -40,22 +47,26 @@ export default function TitleSearch() {
     searchDivStyle.padding = shouldCollapse ? "20px 7%" : "20px 20%";
   }
 
-  const SearchFieldInputProps = {
-    endAdornment: !advancedSearchOpen ? (
-      <InputAdornment position="end">
-        <IconButton color="primary" type="submit">
-          <Search />
-        </IconButton>
-      </InputAdornment>
-    ) : undefined
-  };
-
   useEffect(() => {
+    apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/keyword_categories/`, "GET").then((result) => {
+      if (result.ok) {
+        setAllKeywords(Object.keys(result.data));
+      }
+    });
+
+    apiCall(window._env_.REACT_APP_FLASK_DATA_URL, `/api/${window._env_.REACT_APP_FLASK_DATA_API_VERSION}/region_mapping/`, "GET").then((result) => {
+      if (result.ok) {
+        setAllRegions(result.data);
+      }
+    });
+
+    setAllYears(getYears(2016, new Date().getFullYear()));
+
     const q = searchParams.get("q");
-    setSearchTerm(q);
 
     if (q) {
       setShowingResults(true);
+      setSearchTerm(q);
     }
   }, []);
 
@@ -70,47 +81,169 @@ export default function TitleSearch() {
   }, [searchParams]);
 
   useEffect(() => {
-    if (searchTerm === "" && advancedSearchOpen) {
-      setShouldSubmitSearchParams(false);
-    } else {
-      setShouldSubmitSearchParams(true);
+    const from = searchParams.get("from");
+    const to = searchParams.get("to");
+    const regionCodes = searchParams.get("regions");
+    const keywords = searchParams.get("keywords");
+
+    const prevSelectedFilters = { ...selectedFilters };
+
+    const defaultYearFrom = allYears[0];
+    const defaultYearTo = allYears[allYears.length - 1];
+
+    // e.g. from="2019-01-01", to="2022-12-31"
+    prevSelectedFilters.from.defaultValue = defaultYearFrom;
+    prevSelectedFilters.from.value = from ? from.slice(0, 4) : defaultYearFrom;
+
+    prevSelectedFilters.to.defaultValue = defaultYearTo;
+    prevSelectedFilters.to.value = to ? to.slice(0, 4) : defaultYearTo;
+
+    // e.g. regionCodes="[sk,us,gb]"
+    if (regionCodes) {
+      const regionCodesArr = regionCodes.slice(1, -1).split(",");
+
+      // e.g. selectedRegions=['Slovakia', 'United States', 'Great Britan']
+      const selectedRegions = regionCodesArr.map((regionCode) => {
+        const regionName = Object.keys(allRegions).find((key) => allRegions[key] === regionCode);
+        return regionName;
+      });
+
+      prevSelectedFilters.regions = selectedRegions;
     }
-  }, [searchTerm, advancedSearchOpen]);
+    if (keywords) {
+      const keywordsArr = keywords.slice(1, -1).split(",");
+      prevSelectedFilters.keywords = keywordsArr;
+    }
+
+    setSelectedFilters(prevSelectedFilters);
+  }, [allYears, allRegions, allKeywords]);
+
+  // calculate number of selected filters
+  useEffect(() => {
+    const yearFrom = selectedFilters.from.defaultValue !== selectedFilters.from.value ? 1 : 0;
+    const yearTo = selectedFilters.to.defaultValue !== selectedFilters.to.value ? 1 : 0;
+    const regions = selectedFilters.regions.length;
+    const keywords = selectedFilters.keywords.length;
+
+    setNumSelectedFilters(yearFrom + yearTo + regions + keywords);
+  }, [selectedFilters]);
 
   const handleSearchChange = (value) => {
     setSearchTerm(value);
   };
 
-  const submitSearchParams = () => {
-    if (searchTerm === "") {
-      if (advancedSearchOpen) {
-        setShouldSubmitSearchParams(false);
-      }
-      return;
+  const onYearFromSelect = (yearFrom) => {
+    let yearTo = selectedFilters.to.value;
+    // disable wrong year range
+    if (yearFrom > selectedFilters.to.value) {
+      yearTo = yearFrom;
     }
-    searchParams.delete("q");
-    searchParams.delete("page");
-
-    searchParams.append("q", searchTerm);
-    searchParams.append("page", 1);
-
-    setShowingResults(true);
-    setSearchParams(searchParams);
-    setAdvancedSearchOpen(false);
-    navigate(`stats?${searchParams.toString()}`);
+    setSelectedFilters({
+      ...selectedFilters,
+      from: { ...selectedFilters.from, value: yearFrom },
+      to: { ...selectedFilters.to, value: yearTo }
+    });
   };
 
-  const updateNumSelectedFilters = (num) => {
-    setNumSelectedFilters(num);
+  const onYearToSelect = (yearTo) => {
+    setSelectedFilters({
+      ...selectedFilters,
+      to: { ...selectedFilters.to, value: yearTo }
+    });
+  };
+
+  const onRegionSelect = (selectedRegions) => {
+    setSelectedFilters({ ...selectedFilters, regions: selectedRegions });
+  };
+
+  const onKeywordSelect = (selectedKeywords) => {
+    setSelectedFilters({ ...selectedFilters, keywords: selectedKeywords });
   };
 
   const onAdvancedSearchHide = () => {
     setAdvancedSearchOpen(false);
+    window.scroll({ top: 0, left: 0, behavior: "smooth" });
+  };
+
+  const onAdvancedSearchClear = () => {
+    const defaultYearFrom = allYears[0];
+    const defaultYearTo = allYears[allYears.length - 1];
+
+    setSelectedFilters({
+      ...emptyFilters,
+      from: {
+        value: defaultYearFrom,
+        defaultValue: defaultYearFrom
+      },
+      to: {
+        value: defaultYearTo,
+        defaultValue: defaultYearTo
+      }
+    });
+  };
+
+  const submitSearchParams = () => {
+    searchParams.delete("q");
+    searchParams.delete("page");
+    for (let i = 0; i < selectedFilters.length; i += 1) {
+      const filterName = selectedFilters[i];
+      searchParams.delete(filterName);
+    }
+
+    searchParams.append("q", searchTerm);
+    // searchParams.append("page", 1);
+
+    const selectedFrom = selectedFilters.from.value !== selectedFilters.from.defaultValue
+      ? selectedFilters.from.value
+      : null;
+    const selectedTo = selectedFilters.to.value !== selectedFilters.to.defaultValue
+      ? selectedFilters.to.value
+      : null;
+
+    let selectedRegions = selectedFilters.regions.map((region) => allRegions[region]);
+    selectedRegions = selectedRegions.length ? selectedRegions : null;
+
+    const selectedKeywords = selectedFilters.keywords.length ? selectedFilters.keywords : null;
+
+    if (selectedFrom) {
+      searchParams.append("from", `${selectedFrom}-01-01`);
+    }
+    if (selectedTo) {
+      searchParams.append("to", `${selectedTo}-12-31`);
+    }
+    if (selectedRegions) {
+      searchParams.append("regions", `[${selectedRegions.join(",")}]`);
+    }
+    if (selectedKeywords) {
+      searchParams.append("keywords", `[${selectedKeywords.join(",")}]`);
+    }
+
+    setShowingResults(true);
+    setSearchParams(searchParams);
+    navigate(`stats?${searchParams.toString()}`);
+  };
+
+  const onAdvancedSearchApply = () => {
+    onAdvancedSearchHide();
+    submitSearchParams();
+  };
+
+  const onAdvancedSearchCancel = () => {
+    for (let i = 0; i < selectedFilters.length; i += 1) {
+      const filterName = selectedFilters[i];
+      searchParams.delete(filterName);
+    }
+
+    setSearchParams(searchParams);
+
+    onAdvancedSearchClear();
+    onAdvancedSearchHide();
   };
 
   const onSubmit = (event) => {
     event.preventDefault();
 
+    onAdvancedSearchHide();
     submitSearchParams();
   };
 
@@ -119,18 +252,19 @@ export default function TitleSearch() {
       <Grid container spacing={2} direction="column">
         <Grid container direction="column" alignItems="center" justify="center">
           <Grid item>
-            <Link to=".." style={{ textDecoration: "none" }}>
+            <Link to="/" onClick={onAdvancedSearchCancel} style={{ textDecoration: "none" }}>
               <Grid item>
+                {/* <img src="./adversea_logo.svg" alt="adversea" height="auto" width="100%" /> */}
                 <Box
                   component="img"
                   sx={{
                     height: "auto",
                     width: "auto",
                     maxHeight: { xs: 200, md: "100%", lg: "100%" },
-                    maxWidth: { xs: 200, md: "100%", lg: "100%" }
+                    maxWidth: { xs: 200, md: "100%", lg: "100%" },
                   }}
                   alt="adversea"
-                  src="/adversea_logo.svg"
+                  src="./adversea_logo.svg"
                 />
               </Grid>
             </Link>
@@ -145,14 +279,14 @@ export default function TitleSearch() {
                 fontSize: 12
               }}
             >
-              beta version
+              Beta version
             </Typography>
           </Grid>
           <Grid item>
             <Typography color="secondary" sx={{ fontSize: { xs: "80%", md: "100%" } }}>
-              your adverse media screening portal.
+              Your adverse media screening portal.
               {" "}
-              <Link to="/about">learn more</Link>
+              <Link to="/about">Learn more</Link>
               .
             </Typography>
           </Grid>
@@ -160,58 +294,88 @@ export default function TitleSearch() {
         <Grid item>
           <form onSubmit={onSubmit}>
             <TextField
-              placeholder="check your customer, colleague, ... or tinder match"
               id="outlined-search"
               color="secondary"
               value={searchTerm}
-              label="search"
+              label="Search"
               autoComplete="off"
               variant="outlined"
               onChange={(event) => handleSearchChange(event.target.value)}
               fullWidth
-              InputProps={SearchFieldInputProps}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton color="primary" type="submit">
+                      <Search />
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
             />
           </form>
         </Grid>
       </Grid>
-      <Grid item container direction="row">
-        {!shouldSubmitSearchParams && (
-          <Grid item>
-            <Typography color="error">search field cannot be empty</Typography>
-          </Grid>
-        )}
-
-        {!advancedSearchOpen && (
-          <Grid container justifyContent="flex-end" spacing={1} alignItems="center">
-            <Grid item>
-              <AppliedFilters
-                numSelectedFilters={numSelectedFilters}
-                onClick={() => setAdvancedSearchOpen(true)}
-              />
-            </Grid>
-            <Grid item>
-              <Button
-                color="secondary"
-                variant="text"
-                size="small"
-                style={{ textDecoration: "underline" }}
-                onClick={() => setAdvancedSearchOpen(true)}
-              >
-                Advanced search
-              </Button>
-            </Grid>
-          </Grid>
-        )}
+      <Grid item>
+        <Collapse timeout={1200} in={advancedSearchOpen}>
+          <AdvancedSearch
+            allYearsFromAPI={allYears}
+            allRegionsFromAPI={allRegions}
+            allKeywordsFromAPI={allKeywords}
+            selectedAdvancedFilters={selectedFilters}
+            onYearFromSelect={onYearFromSelect}
+            onYearToSelect={onYearToSelect}
+            onRegionSelect={onRegionSelect}
+            onKeywordSelect={onKeywordSelect}
+            onHide={onAdvancedSearchHide}
+            onClear={onAdvancedSearchClear}
+            onApply={onAdvancedSearchApply}
+            onCancel={onAdvancedSearchCancel}
+          />
+        </Collapse>
       </Grid>
 
       <Grid item>
-        <Handler
-          open={advancedSearchOpen}
-          submitAllowed={shouldSubmitSearchParams}
-          onFilterSelect={updateNumSelectedFilters}
-          apply={submitSearchParams}
-          hide={onAdvancedSearchHide}
-        />
+        {!advancedSearchOpen && (
+          <Stack alignItems="center" justifyContent="flex-end" direction="row" spacing={1}>
+            {numSelectedFilters !== 0 && (
+              <ButtonBase onClick={() => setAdvancedSearchOpen(true)}>
+                <Stack direction="row" spacing={0.3}>
+                  <Box
+                    sx={{
+                      textAlign: "center",
+                      borderRadius: "50%",
+                      width: "0.9rem",
+                      height: "0.9rem",
+                      backgroundColor: "primary.main"
+                    }}
+                  >
+                    <Typography fontSize={11} color="white">
+                      {numSelectedFilters}
+                    </Typography>
+                  </Box>
+                  {numSelectedFilters === 1 ? (
+                    <Typography color="primary" fontSize={11}>
+                      applied filter
+                    </Typography>
+                  ) : (
+                    <Typography color="primary" fontSize={11}>
+                      applied filters
+                    </Typography>
+                  )}
+                </Stack>
+              </ButtonBase>
+            )}
+            <Button
+              color="secondary"
+              variant="text"
+              size="small"
+              style={{ textDecoration: "underline" }}
+              onClick={() => setAdvancedSearchOpen(true)}
+            >
+              Advanced search
+            </Button>
+          </Stack>
+        )}
       </Grid>
 
       <Grid item>
