@@ -11,7 +11,6 @@ import {
 import { VisibilityOutlined, VisibilityOffOutlined } from "@mui/icons-material";
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import ClearIcon from "@mui/icons-material/Clear";
 import { initialLoginValues, loginValidationSchema } from "../Utils/AccountSchemas";
 import { useUser } from "../Utils/UserContext";
 import HomeLink from "./HomeLink";
@@ -77,13 +76,8 @@ export default function Login({ isOpen, onClose = () => {}, onSignupOpen = () =>
     <Dialog open={isOpenDialog} onClose={onClose}>
       <DialogContent sx={{ m: "auto", width: 250 }}>
         <form onSubmit={formikLogin.handleSubmit}>
-          <Stack sx={{ mb: 1 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <HomeLink variant="p" />
-              <IconButton onClick={onClose}>
-                <ClearIcon />
-              </IconButton>
-            </Stack>
+          <Stack sx={{ mb: 1 }} spacing={1}>
+            <HomeLink variant="p" />
             <Typography variant="h2">Log in</Typography>
           </Stack>
           <Stack spacing={3} sx={{ mb: 2 }}>

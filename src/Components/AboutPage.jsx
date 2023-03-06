@@ -1,14 +1,9 @@
-import {
-  Typography, Grid, Link, IconButton
-} from "@mui/material";
+import { Typography, Grid, Link } from "@mui/material";
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import useWindowSize from "../../Utils/Screen";
-import MainHeading from "../MainHeading";
+import useWindowSize from "../Utils/Screen";
+import MainHeading from "./MainHeading";
 
 export default function AboutPage() {
-  const navigate = useNavigate();
   const { width } = useWindowSize();
   const shouldCollapse = width < 992;
 
@@ -19,15 +14,8 @@ export default function AboutPage() {
 
   return (
     <Grid container style={searchDivStyle}>
-      <Grid container direction="column" spacing={2}>
-        <Grid item>
-          <IconButton size="large" onClick={() => navigate(-1)}>
-            <ArrowBackIcon fontSize="large" />
-          </IconButton>
-        </Grid>
-        <Grid item>
-          <MainHeading text="about adversea" />
-        </Grid>
+      <Grid item>
+        <MainHeading text="about adversea" />
       </Grid>
       <Grid container spacing={2} mt={0.5} direction="column">
         <Grid item>
@@ -152,8 +140,9 @@ export default function AboutPage() {
             </Grid>
             <Grid item>
               <Typography color="secondary" fontSize="1rem">
-                direct access to articles is provided by API. if you would like to use our API for
-                your project, contact us for further information.
+                direct access to articles is provided by API.
+                if you would like to use our API for your project,
+                contact us for further information.
               </Typography>
             </Grid>
           </Grid>

@@ -7,7 +7,7 @@ import Login from "./Login";
 import Archive from "./Archive";
 import ReportPage from "./ReportPage";
 import { useUser } from "../Utils/UserContext";
-import AboutPage from "./AboutPage/AboutPage";
+import AboutPage from "./AboutPage";
 
 export default function MainRouter() {
   const { user } = useUser();
