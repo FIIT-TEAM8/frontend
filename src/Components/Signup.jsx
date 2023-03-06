@@ -9,6 +9,7 @@ import {
   InputAdornment
 } from "@mui/material";
 import { VisibilityOutlined, VisibilityOffOutlined } from "@mui/icons-material";
+import ClearIcon from "@mui/icons-material/Clear";
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { initialSignupValues, signupValidationSchema } from "../Utils/AccountSchemas";
@@ -20,7 +21,7 @@ export default function Signup({ isOpen, onClose, onLoginOpen }) {
   const [displayedPassword, setDisplayedPassword] = useState(false);
   const [passwordType, setPasswordType] = useState("password"); // set to hide the plain text of entered password
   // handling visibility of the signup dialog
-  const [isOpenDialog, setIsOpenDialog] = useState(false);
+  // const [isOpenDialog, setIsOpenDialog] = useState(false);
   // show/hide "taken username" error message
   const [takenUsername, setTakenUsername] = useState(false);
   const { signup } = useUser();
@@ -56,7 +57,7 @@ export default function Signup({ isOpen, onClose, onLoginOpen }) {
 
   // parent component is handling the open and close state
   useEffect(() => {
-    setIsOpenDialog(isOpen);
+    // setIsOpenDialog(isOpen);
 
     // set initial values before next open of the dialog
     if (!isOpen) {
@@ -72,11 +73,16 @@ export default function Signup({ isOpen, onClose, onLoginOpen }) {
   };
 
   return (
-    <Dialog open={isOpenDialog} onClose={onClose}>
+    <Dialog open onClose={onClose}>
       <DialogContent sx={{ m: "auto", width: 250 }}>
         <form onSubmit={formikLogin.handleSubmit}>
           <Stack sx={{ mb: 1 }} spacing={1}>
-            <HomeLink variant="p" />
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <HomeLink variant="p" />
+              <IconButton onClick={onClose}>
+                <ClearIcon />
+              </IconButton>
+            </Stack>
             <Typography variant="h2">Sign up</Typography>
           </Stack>
           <Stack spacing={3} sx={{ mb: 2 }}>
