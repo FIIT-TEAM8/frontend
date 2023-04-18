@@ -72,7 +72,8 @@ export default function SearchResults() {
   const showStatistics = () => {
     searchParams.delete("ids");
     searchParams.delete("page");
-    navigate(`/results?${searchParams.toString()}`);
+    console.log("showing statistics...");
+    navigate(`/stats?${searchParams.toString()}`);
   };
 
   if (isLoaded) {
