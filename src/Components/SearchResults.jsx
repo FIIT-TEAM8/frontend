@@ -72,7 +72,7 @@ export default function SearchResults() {
   const showStatistics = () => {
     searchParams.delete("ids");
     searchParams.delete("page");
-    navigate(`/stats?${searchParams.toString()}`);
+    navigate(`/results?${searchParams.toString()}`);
   };
 
   if (isLoaded) {
