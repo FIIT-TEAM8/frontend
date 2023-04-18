@@ -105,7 +105,7 @@ export default class RegionsPieChart extends PureComponent<{
     };
 
     const showArticlesByIDs = () => {
-      data.navigate(`/results?${data.searchParams.toString()}`);
+      data.navigate(`/stats?${data.searchParams.toString()}`);
     };
 
     return (
